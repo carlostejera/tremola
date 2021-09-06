@@ -291,4 +291,9 @@ function qr_scan_confirmed() {
   closeOverlay();
 }
 
+function takePhoto() {
+  console.log("Takeing images...");
+  backend("make:image")
+}
+
 // ---

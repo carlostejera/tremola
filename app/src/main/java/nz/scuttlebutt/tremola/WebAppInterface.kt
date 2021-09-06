@@ -1,6 +1,9 @@
 package nz.scuttlebutt.tremola
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.provider.MediaStore
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.util.Base64
@@ -100,6 +103,8 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 val rawStr = tremolaState.msgTypes.mkPost(
                                  Base64.decode(args[1], Base64.NO_WRAP).decodeToString(),
                                  args.slice(2..args.lastIndex))
+                Log.d("onFrontendRequest", "Command: " + args[0])
+                Log.d("onFrontendRequest","Message Sending: " + Base64.decode(args[1], Base64.NO_WRAP).decodeToString())
                 val evnt = tremolaState.msgTypes.jsonToLogEntry(rawStr,
                                             rawStr.encodeToByteArray())
                 evnt?.let { rx_event(it) } // persist it, propagate horizontally and also up
@@ -124,6 +129,10 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                         Toast.LENGTH_LONG).show()
                 }
             }
+            "make:image" -> {
+                Log.d("onFrontendRequest", "Trying to take image")
+                takeImage()
+            }
             else -> {
                 Log.d("onFrontendRequest", "unknown")
             }
@@ -139,6 +148,15 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
             select(listOf("profile","contacts","chats"))
         }
         */
+    }
+
+    fun takeImage() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            act.startActivityForResult(takePictureIntent, 1)
+        } catch (e: ActivityNotFoundException) {
+            Log.e("Image", "Error while taking the image")
+        }
     }
 
     fun eval(js: String) { // send JS string to webkit frontend for execution

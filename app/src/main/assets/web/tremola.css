@@ -37,6 +37,11 @@
   .gray {
     background-color: var(--gray);
   }
+
+  .green {
+    background-color: var(--lightGreen);
+  }
+
   .flat {
     border: none;
     font-size: small;

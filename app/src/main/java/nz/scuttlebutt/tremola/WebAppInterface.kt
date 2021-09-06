@@ -1,11 +1,13 @@
 package nz.scuttlebutt.tremola
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.provider.MediaStore
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.graphics.Bitmap
 import android.util.Base64
 import android.util.Log
 import android.webkit.JavascriptInterface
@@ -130,8 +132,14 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 }
             }
             "make:image" -> {
+                // Make an image for immediate sending
                 Log.d("onFrontendRequest", "Trying to take image")
                 takeImage()
+                eval("backend(\"debug takeImage\")")
+            }
+            "debug" -> {
+                // Debug message to debug JS Code
+                Log.d("jsFrontend", args[1])
             }
             else -> {
                 Log.d("onFrontendRequest", "unknown")
@@ -150,7 +158,9 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
         */
     }
 
-    fun takeImage() {
+    private fun takeImage() {
+        // Tries to make an image with the camera app and returns it
+        // returns null if something goes wrong
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             act.startActivityForResult(takePictureIntent, 1)

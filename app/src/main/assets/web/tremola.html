@@ -17,6 +17,11 @@
   <button>item3</button> -->
 </div>
 
+  <div id='post-menu' class='post-menu-overlay'>
+    <button class="menu_item_button" onclick="getFile();">Import Photo</button>
+    <button class="menu_item_button" onclick="takePhoto();">Take Photo</button>
+  </div>
+
 <div id='hdr' style="height: 45px;margin: 3px; width: calc(100% - 6px);">
   <div style="display:flex; flex-direction: row; justify-content: center; align-items: center;">
     <div id="div:qr" style="align: left;"><button id='btn:qr' class="flat" onclick="showQR();" style="background-color: transparent;"><font size=+2><strong>&nbsp;&#x2680;&nbsp;</strong></font></button></div>
@@ -204,7 +209,7 @@
   <table id="div:textarea" class="neutral" style="height: 56px; width: calc(100% - 6pt); display: none; border: 3px inset var(--light); margin: 3pt;" width=100%>
     <tr><td width=95%><textarea id='draft' rows=3 placeholder='Tap here to type'></textarea>
       <!-- td width=5% height=100%><button id='btn:attach' class="flat passive buttontext"><font size=+2>&#x1F4CE;</font><br><font size=small>Attach</font></button></td -->
-      <td width=5% height=100%><button id='btn:image' class="flat green buttontext" onclick="getFile()" style="background-image: url('img/send.svg'); width: 35px; height: 50px; margin-bottom: 4px;"></button>
+      <td width=5% height=100%><button id='btn:image_post' class="flat green buttontext" onclick="btnBridge(this);" style="background-image: url('img/send.svg'); width: 35px; height: 50px; margin-bottom: 4px;"></button>
       <td width=5% height=100%><button id='btn:preview' class="flat passive buttontext" onclick="showPreview();" style="background-image: url('img/send.svg'); width: 35px; height: 50px; margin-bottom: 4px;">&nbsp;<!-- font size=+2>&#x1F440;</font><br><font size=small>Preview</font --></button>
   </table>
 

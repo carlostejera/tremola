@@ -135,6 +135,14 @@ function btnBridge(e) {
     document.getElementById("menu").innerHTML = m;
     return;
   }
+  if (e == 'btn:image_post') {
+      if (scenarioMenu[curr_scenario].length == 0)
+        return;
+      document.getElementById("post-menu").style.display = 'initial';
+      document.getElementById("post-menu").style.display = 'initial';
+      document.getElementById("overlay-trans").style.display = 'initial';
+      return;
+    }
   // if (typeof Android != "undefined") { Android.onFrontendRequest(e); }
 }
 

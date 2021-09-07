@@ -148,7 +148,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
             }
             "debug" -> {
                 // Debug message to debug JS Code
-                Log.d("jsFrontend", args[1])
+                Log.d("jsFrontend", args.toString())
             }
             else -> {
                 Log.d("onFrontendRequest", "unknown")

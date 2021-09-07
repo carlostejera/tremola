@@ -200,6 +200,7 @@ function showPreview() {
 
 function showImagePreview(s) {
     document.getElementById('image-preview').src= "data:image/png;base64, " + s;
+    document.getElementById('image-preview').alt=s;
 
       var s = document.getElementById('image-preview-overlay').style;
       s.display = 'initial';

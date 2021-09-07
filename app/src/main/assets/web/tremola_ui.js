@@ -304,6 +304,7 @@ function showImg(arr) {
   backend("debug HelloFromJS")
   backend("debug " + arr)
   var img = document.getElementById('showImg');
+  // TODO: Maybe fix the function if it the sending of the function onActivityResult works.
   img.src = "data:image/png;base64," + arr;
 }
 

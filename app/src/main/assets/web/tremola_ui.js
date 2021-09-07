@@ -331,6 +331,11 @@ function sendImg(img) {
   let recps = tremola.chats[curr_chat].members.join(' ')
   backend("debug " + recps)
 
+  // If img has data:image/png;base64, then show remove it from the string
+  if (img.includes("data:image/png;base64, ")) {
+    img = img.split("data:image/png;base64, ")[1]
+  }
+
   backend("debug " + "IMG" + img)
   let msg = btoa("IMG" + img)
   backend("debug " + msg)

@@ -128,6 +128,16 @@
     </div>
   </div>
 
+  <div id='image-preview-overlay' class='qr-overlay'>
+    <img src="" alt="prev" class="preview-of-image" id="image-preview">
+    <div>
+      <table><tr>
+        <td width=90% height=100%><button class="flat passive buttontext" onclick="closeOverlay();" style="height: 40px; color: red; background-image: url('img/cancel.svg'); width: 100%;">&nbsp;</button>
+        <td width=10% height=100%><button class="flat passive buttontext" style="height: 40px; background-image: url('img/checked.svg'); width: 35px;" onclick="new_post(document.getElementById('image-preview').src);">&nbsp;</button>
+      </table>
+    </div>
+  </div>
+
   <div id='edit-overlay' class='qr-overlay'>
     <div id="edit_title" style='margin-bottom: 25px;'>Edit X:</div>
     <input type="text" id="edit_text" minlength="1" size="64" style="width: calc(100% - 10px); height: 30px;">&nbsp;

@@ -180,12 +180,27 @@ class MainActivity : Activity() {
             // Send Byte Array to javascript, so it can be displayed on the image element with the id showImg
             // ByteArray encode base64
             var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
+
+            // Split the string into two halfes
+            val part: Int = img.count() / 4 // get the middle of the String
+            val parts = arrayOf<String>(img.substring(0, part*1),
+                img.substring(part*1, part*2),
+                img.substring(part*2, part*3),
+                img.substring(part*3, part*4))
+
             Log.d("Ian", img)
-            val s: String = "Img(\"" + img + "\")"
-            Log.d("Ian", s)
+            Log.d("Ian", "Length = " + img.count())
+            Log.d("Ian", "Part = $part")
+            Log.d("Ian", parts[0])
+            Log.d("Ian", parts[1])
+            Log.d("Ian", parts[2])
+            Log.d("Ian", parts[3])
             tremolaState.wai.eval("showImg(\"HelloFromKotlin\")")
-            // tremolaState.wai.eval("let img = '{$img}'")
-            tremolaState.wai.eval(s)
+            tremolaState.wai.eval("let arr = [\"" + parts[0] + "\"]")
+            tremolaState.wai.eval("arr.push(\"" + parts[1] + "\")")
+            tremolaState.wai.eval("arr.push(\"" + parts[2] + "\")")
+            tremolaState.wai.eval("arr.push(\"" + parts[3] + "\")")
+            tremolaState.wai.eval("showImg(arr)")
             tremolaState.wai.eval("backend(\"debug hello\")")
         }
 

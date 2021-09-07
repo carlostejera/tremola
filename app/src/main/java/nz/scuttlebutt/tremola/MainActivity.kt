@@ -179,6 +179,7 @@ class MainActivity : Activity() {
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 1, stream)
             // Send Byte Array to javascript, so it can be displayed on the image element with the id showImg
             // ByteArray encode base64
+            // TODO: Add compression to the 
             var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
 
             // Convert String to a one element part for better sending to javascript
@@ -187,6 +188,8 @@ class MainActivity : Activity() {
             // Javascript Code Assembling
             tremolaState.wai.eval("let imgParts = [\"" + parts[0] + "\"]")
             tremolaState.wai.eval("showImg(imgParts)")
+
+            // TODO: Add image to database
         }
 
         super.onActivityResult(requestCode, resultCode, data)

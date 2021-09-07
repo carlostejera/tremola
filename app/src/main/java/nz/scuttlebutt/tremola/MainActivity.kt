@@ -191,10 +191,12 @@ class MainActivity : Activity() {
         if ( requestCode == 1111 && resultCode == RESULT_OK) {
             val imageBitmap = data?.data //as Bitmap
             val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageBitmap)
+
+            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 96, 96*bitmap.height/bitmap.width, true)
             //convert imageBitmap to Byte Array
 
             val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 1, stream)
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream)
 
             var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
 

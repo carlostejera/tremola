@@ -320,8 +320,9 @@ function sendImg(img) {
   let recps = tremola.chats[curr_chat].members.join(' ')
   backend("debug " + recps)
 
+  backend("debug ori " + img)
   let msg = "Eine neue Nachricht!"
-  msg = btoa(msg)
+  msg = btoa(img)
   backend("debug " + msg)
 
   backend("priv:post " + msg + " " + recps)

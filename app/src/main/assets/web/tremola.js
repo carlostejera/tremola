@@ -229,6 +229,23 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
     img = wrap.innerHTML;
   }
 
+  // Secret! PSSSSSSSSSS!
+  if (txt.substring(0.3) == "/R") {
+    img = document.createElement('img');
+    backend("debug " + txt);
+    backend("debug " + txt.substring(3));
+    img.setAttribute("src", "https://i.ds.at/MxdaKg/rs:fill:750:0/plain/2021/07/29/572c4830-721d-11eb-bb63-96959c3b62f2.jpg");
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.maxHeight = "300px";
+    img.style.maxWidth = "300px";
+    img.style.display = "block";
+    // Get the element as html code
+    var wrap = document.createElement('div');
+    wrap.appendChild(img.cloneNode(true));
+    img = wrap.innerHTML;
+  }
+
   if (is_other) {
     var c = tremola.contacts[p.from]
     row = "<td style='vertical-align: top;'><button class=contact_picture style='margin-right: 0.5em; margin-left: 0.25em; background: " + c.color + "; width: 2em; height: 2em;'>" + c.initial + "</button>"

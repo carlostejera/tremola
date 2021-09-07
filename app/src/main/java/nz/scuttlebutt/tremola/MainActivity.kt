@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
 import android.net.*
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
+import android.provider.MediaStore
 import android.text.format.Formatter
+import android.util.Base64
 import android.util.Log
 import android.view.Window
 import android.webkit.WebView
@@ -19,6 +22,7 @@ import nz.scuttlebutt.tremola.ssb.peering.RpcResponder
 import nz.scuttlebutt.tremola.ssb.peering.RpcServices
 import nz.scuttlebutt.tremola.ssb.peering.UDPbroadcast
 import nz.scuttlebutt.tremola.utils.Constants
+import java.io.ByteArrayOutputStream
 import java.lang.Thread.sleep
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -166,6 +170,25 @@ class MainActivity : Activity() {
             }
             tremolaState.wai.eval(cmd)
         }
+
+        // Retrieve Image from taking the image
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            // Convert imageBitmap to ByteArray
+            val stream = ByteArrayOutputStream()
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 1, stream)
+            // Send Byte Array to javascript, so it can be displayed on the image element with the id showImg
+            // ByteArray encode base64
+            var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
+            Log.d("Ian", img)
+            val s: String = "Img(\"" + img + "\")"
+            Log.d("Ian", s)
+            tremolaState.wai.eval("showImg(\"HelloFromKotlin\")")
+            // tremolaState.wai.eval("let img = '{$img}'")
+            tremolaState.wai.eval(s)
+            tremolaState.wai.eval("backend(\"debug hello\")")
+        }
+
         super.onActivityResult(requestCode, resultCode, data)
     }
 

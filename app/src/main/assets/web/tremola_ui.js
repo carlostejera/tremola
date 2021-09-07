@@ -308,4 +308,11 @@ function takePhoto() {
   backend("make:image")
 }
 
+function showImg(arr) {
+  backend("debug HelloFromJS")
+  backend("debug " + arr)
+  var img = document.getElementById('showImg');
+  img.src = "data:image/png;base64," + arr;
+}
+
 // ---

@@ -192,6 +192,22 @@ class MainActivity : Activity() {
             // TODO: Add image to database
         }
 
+        if ( requestCode == 1111 && resultCode == RESULT_OK) {
+            val imageBitmap = data?.data //as Bitmap
+            val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageBitmap)
+            //convert imageBitmap to Byte Array
+
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 1, stream)
+
+            var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
+
+            val parts = arrayOf<String>(img.substring(0, img.count()))
+
+            tremolaState.wai.eval("let imgParts = [\"" + parts[0] + "\"]")
+            tremolaState.wai.eval("showImagePreview(imgParts)")
+        }
+
         super.onActivityResult(requestCode, resultCode, data)
     }
 

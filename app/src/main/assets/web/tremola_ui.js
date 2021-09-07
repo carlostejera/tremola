@@ -311,14 +311,8 @@ function menu_take_photo() {
 }
 
 function showImg(arr) {
-  // Merge all elements of arr into one string
-  var bitmap = arr.join("")
-
-  // Decode string with base64
-  var decoded = atob(bitmap)
-
   var img = document.getElementById('showImg');
-  img.src = "data:image/png;base64, " + bitmap;
+  img.src = "data:image/png;base64," + arr;
 }
 
 // ---

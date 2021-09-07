@@ -135,7 +135,6 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 // Make an image for immediate sending
                 Log.d("onFrontendRequest", "Trying to take image")
                 takeImage()
-                eval("backend(\"debug takeImage\")")
             }
             "debug" -> {
                 // Debug message to debug JS Code

@@ -659,4 +659,7 @@ function b2f_initialize(id) {
   setScenario('chats');
 }
 
+function b2f_new_image(s) {
+  console.log("received new_image: <" + s + ">")
+}
 // --- eof

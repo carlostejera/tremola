@@ -46,7 +46,8 @@ var scenarioMenu = {
                 ['Dump', 'menu_dump'],
                 ['Reset', 'menu_reset']]
 */
-  'posts'    : [['Rename', 'menu_edit_convname'],
+  'posts'    : [['Take photo', 'menu_take_photo'],
+                ['Rename', 'menu_edit_convname'],
                 ['(un)Forget', 'menu_forget_conv'],
                 ['Settings', 'menu_settings'],
                 ['About', 'menu_about']],
@@ -291,7 +292,7 @@ function qr_scan_confirmed() {
   closeOverlay();
 }
 
-function takePhoto() {
+function menu_take_photo() {
   console.log("Takeing images...");
   backend("make:image")
 }

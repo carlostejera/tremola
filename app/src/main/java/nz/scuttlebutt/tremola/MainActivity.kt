@@ -182,10 +182,10 @@ class MainActivity : Activity() {
             resized.compress(Bitmap.CompressFormat.JPEG, 85, stream)
             // Send Byte Array to javascript, so it can be displayed on the image element with the id showImg
             // ByteArray encode base64
-            // TODO: Add compression to the 
             var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
             Log.d("image", "${img.length}B <${img}>")
-            tremolaState.wai.eval("b2f_new_image('${img}')")
+            // tremolaState.wai.eval("b2f_new_image('${img}')")
+            tremolaState.wai.eval("sendImg('${img}')")
         }
 
         super.onActivityResult(requestCode, resultCode, data)

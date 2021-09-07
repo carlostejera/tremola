@@ -111,8 +111,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 val rawStr = tremolaState.msgTypes.mkPost(
                                  Base64.decode(args[1], Base64.NO_WRAP).decodeToString(),
                                  args.slice(2..args.lastIndex))
-                Log.d("onFrontendRequest", "Command: " + args[0])
-                Log.d("onFrontendRequest","Message Sending: " + Base64.decode(args[1], Base64.NO_WRAP).decodeToString())
+                Log.d("onFrontendRequest", "Message: " + args)
                 val evnt = tremolaState.msgTypes.jsonToLogEntry(rawStr,
                                             rawStr.encodeToByteArray())
                 evnt?.let { rx_event(it) } // persist it, propagate horizontally and also up

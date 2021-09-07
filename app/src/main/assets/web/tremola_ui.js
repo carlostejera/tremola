@@ -310,9 +310,21 @@ function menu_take_photo() {
   closeOverlay()
 }
 
-function showImg(arr) {
+function showImg(img) {
   var img = document.getElementById('showImg');
   img.src = "data:image/png;base64," + arr;
+}
+
+function sendImg(img) {
+  // Get the recps
+  let recps = tremola.chats[curr_chat].members.join(' ')
+  backend("debug " + recps)
+
+  let msg = "Eine neue Nachricht!"
+  msg = btoa(msg)
+  backend("debug " + msg)
+
+  backend("priv:post " + msg + " " + recps)
 }
 
 // ---

@@ -174,22 +174,18 @@ class MainActivity : Activity() {
         // Retrieve Image from taking the image
         if (requestCode == 1 && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
+            // scale to 96xN pixels
+            val resized = Bitmap.createScaledBitmap(imageBitmap, 96,
+                96*imageBitmap.height/imageBitmap.width, true)
             // Convert imageBitmap to ByteArray
             val stream = ByteArrayOutputStream()
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 1, stream)
+            resized.compress(Bitmap.CompressFormat.JPEG, 85, stream)
             // Send Byte Array to javascript, so it can be displayed on the image element with the id showImg
             // ByteArray encode base64
             // TODO: Add compression to the 
             var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
-
-            // Convert String to a one element part for better sending to javascript
-            val parts = arrayOf<String>(img.substring(0, img.count()))
-
-            // Javascript Code Assembling
-            tremolaState.wai.eval("let imgParts = [\"" + parts[0] + "\"]")
-            tremolaState.wai.eval("showImg(imgParts)")
-
-            // TODO: Add image to database
+            Log.d("image", "${img.length}B <${img}>")
+            tremolaState.wai.eval("b2f_new_image('${img}')")
         }
 
         super.onActivityResult(requestCode, resultCode, data)

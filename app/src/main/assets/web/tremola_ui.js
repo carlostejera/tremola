@@ -188,6 +188,10 @@ function showPreview() {
   overlayIsActive = true;
 }
 
+function getFile() {
+    files()
+}
+
 function menu_about() {
   closeOverlay()
   document.getElementById('about-overlay').style.display = 'initial';

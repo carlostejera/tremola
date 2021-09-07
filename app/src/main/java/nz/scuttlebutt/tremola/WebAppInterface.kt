@@ -1,13 +1,19 @@
 package nz.scuttlebutt.tremola
 
 import android.app.Activity
+import android.app.Instrumentation
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Base64
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat.checkSelfPermission
 import com.google.zxing.integration.android.IntentIntegrator
 import org.json.JSONObject
 
@@ -17,6 +23,7 @@ import nz.scuttlebutt.tremola.ssb.db.entities.Pub
 import nz.scuttlebutt.tremola.ssb.peering.RpcInitiator
 import nz.scuttlebutt.tremola.ssb.peering.RpcServices
 import java.util.concurrent.Executors
+import java.util.jar.Manifest
 
 
 // pt 3 in https://betterprogramming.pub/5-android-webview-secrets-you-probably-didnt-know-b23f8a8b5a0c
@@ -105,6 +112,9 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 evnt?.let { rx_event(it) } // persist it, propagate horizontally and also up
                 return
             }
+            "get:file" -> {
+                chooseImageGallery();
+            }
             "invite:redeem" -> {
                 try {
                     val i = args[1].split("~")
@@ -174,6 +184,13 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
         tremolaState.addLogEntry(entry)       // persist the log entry
         sendEventToFrontend(entry)            // notify the local app
         tremolaState.peers.newLogEntry(entry) // stream it to peers we are currently connected to
+    }
+
+    fun chooseImageGallery() {
+        val IMAGE_CHOOSE = 1111;
+        val iintent = Intent(Intent.ACTION_PICK)
+        iintent.type = "image/*"
+        act.startActivityForResult(iintent, IMAGE_CHOOSE)
     }
 
     fun sendEventToFrontend(evnt: LogEntry) {

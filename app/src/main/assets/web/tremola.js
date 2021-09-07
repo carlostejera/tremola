@@ -186,6 +186,12 @@ function new_post(s) {
   closeOverlay();
 }
 
+function files() { //s being the image
+    var recps = tremola.chats[curr_chat].members.join(' ')
+    backend('get:file' + " " + recps); //send request to backend
+    console.log('get file');
+}
+
 function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group or public)>
   var pl = document.getElementById('lst:posts');
   var is_other = p["from"] != myId;

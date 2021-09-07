@@ -191,6 +191,11 @@ function files() { //s being the image
     backend('get:file' + " " + recps); //send request to backend
     console.log('get file');
     closeOverlay();
+    var s = document.getElementById('image-preview-overlay').style;
+    s.display = 'initial';
+    s.height = '80%'; // 0.8 * docHeight;
+    document.getElementById('overlay-bg').style.display = 'initial';
+    overlayIsActive = true;
 }
 
 function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group or public)>

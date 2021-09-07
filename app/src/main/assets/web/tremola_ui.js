@@ -167,6 +167,7 @@ function closeOverlay(){
   document.getElementById('menu').style.display = 'none';
   document.getElementById('qr-overlay').style.display = 'none';
   document.getElementById('preview-overlay').style.display = 'none';
+  document.getElementById('image-preview-overlay').style.display = 'none';
   document.getElementById('new_chat-overlay').style.display = 'none';
   document.getElementById('new_contact-overlay').style.display = 'none';
   document.getElementById('confirm_contact-overlay').style.display = 'none';

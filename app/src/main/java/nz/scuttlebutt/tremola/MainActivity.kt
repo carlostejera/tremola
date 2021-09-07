@@ -188,22 +188,21 @@ class MainActivity : Activity() {
             tremolaState.wai.eval("sendImg('${img}')")
         }
 
-        if ( requestCode == 1111 && resultCode == RESULT_OK) {
+        if (requestCode == 1111 && resultCode == RESULT_OK) {
             val imageBitmap = data?.data //as Bitmap
             val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageBitmap)
 
-            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 96, 96*bitmap.height/bitmap.width, true)
+            val resized = Bitmap.createScaledBitmap(bitmap, 96,
+                96*bitmap.height/bitmap.width, true)
             //convert imageBitmap to Byte Array
 
             val stream = ByteArrayOutputStream()
-            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream)
+            resized.compress(Bitmap.CompressFormat.JPEG, 85, stream)
 
             var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
+            Log.d("image", "${img.length}B <${img}>")
 
-            val parts = arrayOf<String>(img.substring(0, img.count()))
-
-            tremolaState.wai.eval("let imgParts = [\"" + parts[0] + "\"]")
-            tremolaState.wai.eval("showImagePreview(imgParts)")
+            tremolaState.wai.eval("showImagePreview('${img}')")
         }
 
         super.onActivityResult(requestCode, resultCode, data)

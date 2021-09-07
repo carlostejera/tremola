@@ -133,6 +133,10 @@ textarea {
   background: trans;
 }
 
+.preview-of-image {
+  width: 100%;
+}
+
 .float_button {
   position: absolute;
     top: calc(100% - 110pt);

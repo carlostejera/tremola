@@ -311,9 +311,36 @@ function takePhoto() {
 function showImg(arr) {
   backend("debug HelloFromJS")
   backend("debug " + arr)
+  backend("debug " + Array.isArray(arr))
+  backend("debug " + arr.length)
+  backend("debug " + "Another Message")
+  // Debug to the backend the array per element
+  for (let index = 0; index < arr.length; index++) {
+    const element = arr[index];
+    
+    backend("debug Now debugging element " + index)
+    backend("debug " + element)
+  }
+  backend("debug " + "After for")
+
+  // Merge all elements of arr into one string
+  var bitmap = arr.join("")
+  backend("debug " + bitmap)
+
+  // Decode string with base64
+  var decoded = atob(bitmap)
+
+  // Get element with id test and display decoded on it
+  //document.getElementById("test").innerHTML = decoded
+  backend("debug " + decoded)
+
+  // Convert string to array of bytes
+  var bytes = new Uint8Array(decoded.length)
+  backend("debug inJS " + bytes)
+
   var img = document.getElementById('showImg');
   // TODO: Maybe fix the function if it the sending of the function onActivityResult works.
-  img.src = "data:image/png;base64," + arr;
+  img.src = "data:image/png;base64, " + bitmap;
 }
 
 // ---

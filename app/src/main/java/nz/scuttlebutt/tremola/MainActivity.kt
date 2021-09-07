@@ -181,36 +181,12 @@ class MainActivity : Activity() {
             // ByteArray encode base64
             var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
 
-            // Split the string into pieces
-            val part: Int = img.count() / 4
-            val parts = arrayOf<String>(img.substring(0, part*1),
-                img.substring(part*1, part*2),
-                img.substring(part*2, part*3),
-                img.substring(part*3, part*4))
+            // Convert String to a one element part for better sending to javascript
+            val parts = arrayOf<String>(img.substring(0, img.count()))
 
-            // Log Strings for spliting
-            Log.d("Ian", img)
-            Log.d("Ian", "Length = " + img.count())
-            Log.d("Ian", "Part = $part")
-            Log.d("Ian", parts[0])
-            Log.d("Ian", parts[1])
-            Log.d("Ian", parts[2])
-            Log.d("Ian", parts[3])
-
-            // Test Messages to see if the javascript responds (Log Tag: jsFrontend)
-            tremolaState.wai.eval("showImg(\"HelloFromKotlin\")")
-
-            // Actual Command
-            // Variable Assembling
+            // Javascript Code Assembling
             tremolaState.wai.eval("let imgParts = [\"" + parts[0] + "\"]")
-            tremolaState.wai.eval("imgParts.push(\"" + parts[1] + "\")")
-            tremolaState.wai.eval("imgParts.push(\"" + parts[2] + "\")")
-            tremolaState.wai.eval("imgParts.push(\"" + parts[3] + "\")")
-            tremolaState.wai.eval("backend(\"debug \" + imgParts)")
             tremolaState.wai.eval("showImg(imgParts)")
-
-            // Debug JS Log Message
-            tremolaState.wai.eval("backend(\"debug hello\")")
         }
 
         super.onActivityResult(requestCode, resultCode, data)

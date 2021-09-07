@@ -190,6 +190,7 @@ function files() { //s being the image
     var recps = tremola.chats[curr_chat].members.join(' ')
     backend('get:file' + " " + recps); //send request to backend
     console.log('get file');
+    closeOverlay();
 }
 
 function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group or public)>

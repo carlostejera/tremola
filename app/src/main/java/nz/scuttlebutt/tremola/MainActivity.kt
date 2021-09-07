@@ -214,4 +214,12 @@ class MainActivity : Activity() {
         server_socket =  ServerSocket(Constants.SSB_IPV4_TCPPORT)
         Log.d("SERVER TCP addr", "${Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)}:${server_socket!!.localPort}")
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 }

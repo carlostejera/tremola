@@ -205,13 +205,38 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
   box += txt + "<div align=right style='font-size: x-small;'><i>";
   box += d + "</i></div></div>";
   var row;
+
+  // Check if messgae if a image
+  let img;
+  if (txt.substring(0,3) == "IMG") {
+    img = document.createElement('img');
+    backend("debug " + txt);
+    backend("debug " + txt.substring(3));
+    img.setAttribute("src", "data:image/png;base64, " + txt.substring(3));
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.maxHeight = "300px";
+    img.style.maxWidth = "300px";
+    img.style.display = "block";
+    // Get the element as html code
+    var wrap = document.createElement('div');
+    wrap.appendChild(img.cloneNode(true));
+    img = wrap.innerHTML;
+  }
+
   if (is_other) {
     var c = tremola.contacts[p.from]
     row = "<td style='vertical-align: top;'><button class=contact_picture style='margin-right: 0.5em; margin-left: 0.25em; background: " + c.color + "; width: 2em; height: 2em;'>" + c.initial + "</button>"
     // row  = "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&gt;"
-    row += "<td colspan=2 style='padding-bottom: 10px;'>" + box + "<td colspan=2>";
+    if (img) 
+      row += "<td colspan=2 style='padding-bottom: 10px;'>" + img + "<td colspan=2>";
+    else
+      row += "<td colspan=2 style='padding-bottom: 10px;'>" + box + "<td colspan=2>";
   } else {
-    row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + box;
+    if (img)
+      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + img;
+    else
+      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + box;
     row += "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&lt;"
   }
   pl.insertRow(pl.rows.length).innerHTML = row;

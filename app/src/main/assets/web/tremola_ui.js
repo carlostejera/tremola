@@ -139,7 +139,6 @@ function btnBridge(e) {
       if (scenarioMenu[curr_scenario].length == 0)
         return;
       document.getElementById("post-menu").style.display = 'initial';
-      document.getElementById("post-menu").style.display = 'initial';
       document.getElementById("overlay-trans").style.display = 'initial';
       return;
     }
@@ -164,6 +163,7 @@ function menu_settings() {
 }
 
 function closeOverlay(){
+  document.getElementById('post-menu').style.display = 'none';
   document.getElementById('menu').style.display = 'none';
   document.getElementById('qr-overlay').style.display = 'none';
   document.getElementById('preview-overlay').style.display = 'none';

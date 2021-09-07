@@ -46,7 +46,8 @@ var scenarioMenu = {
                 ['Dump', 'menu_dump'],
                 ['Reset', 'menu_reset']]
 */
-  'posts'    : [['Rename', 'menu_edit_convname'],
+  'posts'    : [['Take photo', 'menu_take_photo'],
+                ['Rename', 'menu_edit_convname'],
                 ['(un)Forget', 'menu_forget_conv'],
                 ['Settings', 'menu_settings'],
                 ['About', 'menu_about']],
@@ -314,20 +315,27 @@ function qr_scan_confirmed() {
   closeOverlay();
 }
 
-function takePhoto() {
+function menu_take_photo() {
   console.log("Takeing images...");
   backend("make:image")
+  closeOverlay()
 }
 
-function showImg(arr) {
-  // Merge all elements of arr into one string
-  var bitmap = arr.join("")
-
-  // Decode string with base64
-  var decoded = atob(bitmap)
-
+function showImg(img) {
   var img = document.getElementById('showImg');
-  img.src = "data:image/png;base64, " + bitmap;
+  img.src = "data:image/png;base64," + arr;
+}
+
+function sendImg(img) {
+  // Get the recps
+  let recps = tremola.chats[curr_chat].members.join(' ')
+  backend("debug " + recps)
+
+  backend("debug " + "IMG" + img)
+  let msg = btoa("IMG" + img)
+  backend("debug " + msg)
+
+  backend("priv:post " + msg + " " + recps)
 }
 
 // ---

@@ -177,7 +177,8 @@ function menu_dump() {
 
 function new_post(s) {
   if (s.length == 0) { return; }
-  var draft = unicodeStringToTypedArray(document.getElementById('draft').value); // escapeHTML(
+//  var draft = unicodeStringToTypedArray(document.getElementById('draft').value); // escapeHTML(
+  var draft = s
   var recps = tremola.chats[curr_chat].members.join(' ')
   backend("priv:post " + btoa(draft) + " " + recps);
   var c = document.getElementById('core');
@@ -191,6 +192,10 @@ function files() { //s being the image
     backend('get:file' + " " + recps); //send request to backend
     console.log('get file');
     closeOverlay();
+    var s = document.getElementById('image-preview-overlay').style;
+    s.display = 'initial';
+	s.height = '80%'; // 0.8 * docHeight;
+	overlayIsActive = true;
 }
 
 function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group or public)>

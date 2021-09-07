@@ -167,6 +167,7 @@ function closeOverlay(){
   document.getElementById('menu').style.display = 'none';
   document.getElementById('qr-overlay').style.display = 'none';
   document.getElementById('preview-overlay').style.display = 'none';
+  document.getElementById('image-preview-overlay').style.display = 'none';
   document.getElementById('new_chat-overlay').style.display = 'none';
   document.getElementById('new_contact-overlay').style.display = 'none';
   document.getElementById('confirm_contact-overlay').style.display = 'none';
@@ -194,6 +195,16 @@ function showPreview() {
   s.height = '80%'; // 0.8 * docHeight;
   document.getElementById('overlay-bg').style.display = 'initial';
   overlayIsActive = true;
+}
+
+function showImagePreview(s) {
+    document.getElementById('image-preview').src= "data:image/png;base64, " + s;
+
+      var s = document.getElementById('image-preview-overlay').style;
+      s.display = 'initial';
+      s.height = '80%'; // 0.8 * docHeight;
+      document.getElementById('overlay-bg').style.display = 'initial';
+      overlayIsActive = true;
 }
 
 function getFile() {

@@ -291,4 +291,16 @@ function qr_scan_confirmed() {
   closeOverlay();
 }
 
+function takePhoto() {
+  console.log("Takeing images...");
+  backend("make:image")
+}
+
+function showImg(arr) {
+  backend("debug HelloFromJS")
+  backend("debug " + arr)
+  var img = document.getElementById('showImg');
+  img.src = "data:image/png;base64," + arr;
+}
+
 // ---

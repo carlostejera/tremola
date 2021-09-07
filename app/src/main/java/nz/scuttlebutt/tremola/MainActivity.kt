@@ -179,7 +179,6 @@ class MainActivity : Activity() {
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 1, stream)
             // Send Byte Array to javascript, so it can be displayed on the image element with the id showImg
             // ByteArray encode base64
-            // TODO: Fix the image encoding to Base64 and sending to JS
             var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
 
             // Split the string into pieces

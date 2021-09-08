@@ -166,8 +166,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
     }
 
     private fun takeImage() {
-        // Tries to make an image with the camera app and returns it
-        // returns null if something goes wrong
+        // Tries to make an image with the camera app
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             act.startActivityForResult(takePictureIntent, 1)

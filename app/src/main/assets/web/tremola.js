@@ -251,7 +251,8 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
 
   // Secret! PSSSSSSSSSS!
   if (txt.substring(0.3) == "/R") {
-    img = createImageElement("https://i.ds.at/MxdaKg/rs:fill:750:0/plain/2021/07/29/572c4830-721d-11eb-bb63-96959c3b62f2.jpg", false);
+    console.log(secretIMG)
+    img = createImageElement("IMG" + secretIMG);
   }
 
   if (is_other) {

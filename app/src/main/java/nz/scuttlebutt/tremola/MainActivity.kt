@@ -282,7 +282,6 @@ class MainActivity : Activity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        Log.d("onFrontendrequest", "Permission here!")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionToRecordAccepted = if (requestCode == 200) {
             grantResults[0] == PackageManager.PERMISSION_GRANTED

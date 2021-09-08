@@ -154,10 +154,14 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
             }
             "start:recording" -> {
                 if (!(act as MainActivity).permissionToRecordAccepted) {
+                    // Request permission if the app doesn't have permission
                     Log.d("audio", "Request Permission")
                     ActivityCompat.requestPermissions((act as MainActivity), (act as MainActivity).permissions, 200)
                 } else {
+                    // Start Recording
                     Log.d("audio", "Trying to start recording")
+
+                    // Setting up the Mediarecorder
                     var path = act.cacheDir.toString() + "/tremolaAudio.mp3"
                     recorder = MediaRecorder().apply {
                         setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -166,33 +170,26 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                         setOutputFile("$path")
                     }
 
+                    // Start recording
                     recorder!!.prepare()
                     recorder!!.start()
                 }
             }
             "stop:recording" -> {
+                // Stop Recording only if the permission to record was accepted
                 if ((act as MainActivity).permissionToRecordAccepted) {
+                    // Stop recording
                     Log.d("audio", "Trying to stop recording")
                     recorder!!.stop()
                     recorder!!.release()
 
                     var path = act.cacheDir.toString() + "/tremolaAudio.mp3"
+                    val data: String = convertAudioFileToBase64(path)
 
-                    val baos = ByteArrayOutputStream()
-                    val fis = FileInputStream(File(path))
-                    var data: ByteArray = ByteArray(1024)
-                    var audioBytes: ByteArray
+                    // Send the audio file to the peer
+                    eval("sendAudio('${data}')")
 
-                    // Convert Audio file to bytes
-                    var n: Int
-                    while (-1 != fis.read(data).also { n = it }) baos.write(data, 0, n)
-                    audioBytes = baos.toByteArray()
-
-                    var _audioBase64 = Base64.encodeToString(audioBytes, Base64.NO_WRAP);
-
-                    eval("sendAudio('${_audioBase64}')")
-
-                    // Delete File
+                    // Delete File for cleanup
                     val myFile: File = File(path)
                     myFile.delete()
                 }
@@ -232,6 +229,20 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
         webView.post(Runnable {
             webView.evaluateJavascript(js, null)
         })
+    }
+
+    private fun convertAudioFileToBase64(path: String): String {
+        val baos = ByteArrayOutputStream()
+        val fis = FileInputStream(File(path))
+        var data: ByteArray = ByteArray(1024)
+        var audioBytes: ByteArray
+
+        // Convert Audio file to bytes
+        var n: Int
+        while (-1 != fis.read(data).also { n = it }) baos.write(data, 0, n)
+        audioBytes = baos.toByteArray()
+
+        return Base64.encodeToString(audioBytes, Base64.NO_WRAP);
     }
 
     private fun importIdentity(secret: String): Boolean {

@@ -339,4 +339,60 @@ function sendImg(img) {
   closeOverlay();
 }
 
+// DOM load add event listener to button btn:audio_record
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("DOM loaded");
+  backend("debug DOM Loaded!")
+  document.getElementById('btn:audio_record').addEventListener('mousedown', startRecording);
+});
+
+function startRecording() {
+  try {
+    console.log("Started Recording!")
+    backend("debug Start Recording")
+    const handleSuccess = function(stream) {
+      backend("debug Start stream")
+      const options = {mimeType: 'audio/webm'};
+      const recordedChunks = [];
+      const mediaRecorder = new MediaRecorder(stream, options);
+
+      mediaRecorder.addEventListener('dataavailable', function(e) {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      });
+
+      mediaRecorder.addEventListener('stop', function() {
+        launch_snackbar("Audio Created")
+        console.log(recordedChunks);
+        let reader = new FileReader();
+        reader.readAsDataURL(recordedChunks[0]); 
+        reader.onloadend = function() {
+          let base64data = reader.result;                
+          console.log(base64data);
+          backend("debug " + base64data);
+        }
+      });
+
+      document.getElementById('btn:audio_record').addEventListener('mouseup', function() {
+        console.log("Stopped Recording!")
+        backend("debug Stopped Recording")
+        mediaRecorder.stop();
+      });
+
+      mediaRecorder.start();
+    };
+
+    backend("debug Start Microphone")
+
+    try {
+      navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+          .then(handleSuccess);
+      backend("debug Microphone successful")
+    } catch(err) {
+      backend("debug " + err)
+    }
+  } catch(err) {
+    backend("debug " + err)
+  }
+}
+
 // ---

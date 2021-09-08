@@ -193,6 +193,10 @@ class MainActivity : Activity() {
             tremolaState.wai.eval("showImagePreview('${img}')")
         }
 
+        if (requestCode == 1111 && resultCode != RESULT_OK) {
+            tremolaState.wai.eval("closeOverlay();")
+        }
+
         super.onActivityResult(requestCode, resultCode, data)
     }
 

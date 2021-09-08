@@ -177,7 +177,16 @@ function menu_dump() {
 
 function new_post(s) {
   if (s.length == 0) { return; }
-//  var draft = unicodeStringToTypedArray(document.getElementById('draft').value); // escapeHTML(
+  var draft = unicodeStringToTypedArray(document.getElementById('draft').value); // escapeHTML(
+	var trimmed = '';
+  trimmed = draft.replace(/^\s+|\s+$/g, '');
+  if ( trimmed == '' ) {
+    //document.getElementById('draft').value = '';
+    launch_snackbar('Empty Message');
+    return;
+  }
+
+  console.log(trimmed);
   var draft = s
   var recps = tremola.chats[curr_chat].members.join(' ')
   backend("priv:post " + btoa(draft) + " " + recps);

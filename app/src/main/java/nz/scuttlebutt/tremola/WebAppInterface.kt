@@ -158,7 +158,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                     ActivityCompat.requestPermissions((act as MainActivity), (act as MainActivity).permissions, 200)
                 } else {
                     Log.d("audio", "Trying to start recording")
-                    path = act.cacheDir.toString() + "/tremolaAudio.mp3"
+                    var path = act.cacheDir.toString() + "/tremolaAudio.mp3"
                     recorder = MediaRecorder().apply {
                         setAudioSource(MediaRecorder.AudioSource.MIC)
                         setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)

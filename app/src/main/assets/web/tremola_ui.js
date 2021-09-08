@@ -343,56 +343,37 @@ function sendImg(img) {
 document.addEventListener('DOMContentLoaded', function() {
   console.log("DOM loaded");
   backend("debug DOM Loaded!")
-  document.getElementById('btn:audio_record').addEventListener('mousedown', startRecording);
+  document.getElementById('btn:audio_record').addEventListener('click', recordAudio);
 });
 
-function startRecording() {
-  try {
-    console.log("Started Recording!")
-    backend("debug Start Recording")
-    const handleSuccess = function(stream) {
-      backend("debug Start stream")
-      const options = {mimeType: 'audio/webm'};
-      const recordedChunks = [];
-      const mediaRecorder = new MediaRecorder(stream, options);
+function recordAudio() {
+  backend("start:recording");
+  console.log("Record")
+  document.getElementById('btn:audio_record').removeEventListener('click', recordAudio);
+  document.getElementById('btn:audio_record').addEventListener('click', stopAudio);
+}
 
-      mediaRecorder.addEventListener('dataavailable', function(e) {
-        if (e.data.size > 0) recordedChunks.push(e.data);
-      });
+function stopAudio() {
+  backend("stop:recording");
+  console.log("Stop")
+  document.getElementById('btn:audio_record').removeEventListener('click', stopAudio);
+  document.getElementById('btn:audio_record').addEventListener('click', recordAudio);
+}
 
-      mediaRecorder.addEventListener('stop', function() {
-        launch_snackbar("Audio Created")
-        console.log(recordedChunks);
-        let reader = new FileReader();
-        reader.readAsDataURL(recordedChunks[0]); 
-        reader.onloadend = function() {
-          let base64data = reader.result;                
-          console.log(base64data);
-          backend("debug " + base64data);
-        }
-      });
-
-      document.getElementById('btn:audio_record').addEventListener('mouseup', function() {
-        console.log("Stopped Recording!")
-        backend("debug Stopped Recording")
-        mediaRecorder.stop();
-      });
-
-      mediaRecorder.start();
-    };
-
-    backend("debug Start Microphone")
-
-    try {
-      navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-          .then(handleSuccess);
-      backend("debug Microphone successful")
-    } catch(err) {
-      backend("debug " + err)
-    }
-  } catch(err) {
-    backend("debug " + err)
-  }
+function playAudio(data) {
+  console.log("debug play audio");
+  console.log("debug " + data)
+  let audio = document.createElement('audio');
+  console.log("debug audio created");
+  audio.src = 'data:audio/wav;base64, ' + data;
+  console.log("debug Audio data added")
+  audio.controls = true;
+  console.log("debug controls added")
+  audio.autoplay = true;
+  console.log("debug audio autoplay set")
+  // Add audio to the body
+  document.getElementById("test-audio").appendChild(audio);
+  console.log("debug audio added to test-audio")
 }
 
 // ---

@@ -251,7 +251,6 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
 
   // Secret! PSSSSSSSSSS!
   if (txt.substring(0.3) == "/R") {
-    console.log(secretIMG)
     img = createImageElement("IMG" + secretIMG);
   }
 

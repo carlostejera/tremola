@@ -216,13 +216,12 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
   // Check if message is an image
   let img;
   if (txt.substring(0,3) == "IMG") {
-    backend("debug before func")
-    img = createImageElement(txt, is_other);
+    img = createImageElement(txt);
   }
 
   // Secret! PSSSSSSSSSS!
   if (txt.substring(0.3) == "/R") {
-    img = createImageElement("https://i.ds.at/MxdaKg/rs:fill:750:0/plain/2021/07/29/572c4830-721d-11eb-bb63-96959c3b62f2.jpg", is_other, false);
+    img = createImageElement("https://i.ds.at/MxdaKg/rs:fill:750:0/plain/2021/07/29/572c4830-721d-11eb-bb63-96959c3b62f2.jpg", false);
   }
 
   if (is_other) {
@@ -243,11 +242,10 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
   pl.insertRow(pl.rows.length).innerHTML = row;
 }
 
-function createImageElement (imgCode, isOther, byteArray=true) {
+function createImageElement (imgCode, byteArray=true) {
   // Creates an image HTML element and adds an base64 encoded image to it.
   // Returns the HTML Element as HTML Code
   let img = document.createElement('img');
-  backend("debug in func")
 
   if (byteArray) {
     img.setAttribute("src", "data:image/png;base64, " + imgCode.substring(3));
@@ -255,16 +253,8 @@ function createImageElement (imgCode, isOther, byteArray=true) {
     img.setAttribute("src", imgCode);
   }
 
-  backend("debug bef style")
   // Styling
   img.setAttribute("class", "image-post")
-  if (isOther) {
-    img.style.float = "left";
-  } else {
-    img.style.float = "right";
-  }
-
-  backend("debug af style")
 
   // Get the element as html code
   var wrap = document.createElement('div');

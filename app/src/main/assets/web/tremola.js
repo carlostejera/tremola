@@ -256,13 +256,7 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
 
   let audio;
   if (txt.substring(0, 3) == "AUD") {
-    audio = document.createElement('audio');
-    audio.src = 'data:audio/wav;base64, ' + txt.substring(3);
-    audio.controls = true;
-
-    var wrap = document.createElement('div');
-    wrap.appendChild(audio.cloneNode(true));
-    audio = wrap.innerHTML;
+    audio = createAudioElement(txt);
   }
 
   if (is_other) {
@@ -287,16 +281,12 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
   pl.insertRow(pl.rows.length).innerHTML = row;
 }
 
-function createImageElement (imgCode, byteArray=true) {
+function createImageElement (imgCode) {
   // Creates an image HTML element and adds an base64 encoded image to it.
   // Returns the HTML Element as HTML Code
   let img = document.createElement('img');
 
-  if (byteArray) {
-    img.setAttribute("src", "data:image/png;base64, " + imgCode.substring(3));
-  } else {
-    img.setAttribute("src", imgCode);
-  }
+  img.setAttribute("src", "data:image/png;base64, " + imgCode.substring(3));
 
   // Styling
   img.setAttribute("class", "image-post")
@@ -304,9 +294,19 @@ function createImageElement (imgCode, byteArray=true) {
   // Get the element as html code
   var wrap = document.createElement('div');
   wrap.appendChild(img.cloneNode(true));
-  img = wrap.innerHTML;
+  return wrap.innerHTML;
+}
 
-  return img;
+function createAudioElement(audCode) {
+  // Creates an audio HTML element and adds an base64 encoded audio to it.
+  // Returns the HTML Element as HTML Code
+  let audio = document.createElement('audio');
+  audio.src = 'data:audio/wav;base64, ' + audCode.substring(3);
+  audio.controls = true;
+
+  var wrap = document.createElement('div');
+  wrap.appendChild(audio.cloneNode(true));
+  return wrap.innerHTML;
 }
 
 function load_chat(nm) {

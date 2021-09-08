@@ -175,18 +175,36 @@ function menu_dump() {
 
 // ---
 
+// DOM Load Eventlistener
+document.addEventListener('DOMContentLoaded', function() {
+  // First time check draft
+  check_draft_input();
+
+  // Adding listener to the check draft input function
+  let draftObj = document.getElementById("draft");
+  draftObj.addEventListener("input", check_draft_input);
+});
+
+function check_draft_input() {
+  // Check if the value in the draft box is not empty
+  var draft = unicodeStringToTypedArray(document.getElementById('draft').value);
+
+  // Trim the string so that is has no unnecessary whitespace
+  var trimmed = '';
+  trimmed = draft.replace(/^\s+|\s+$/g, '');
+
+  // Is the trimmed version empty?
+  if ( trimmed == '' ) {
+    document.getElementById('btn:preview').disabled = true;
+  } else {
+    document.getElementById('btn:preview').disabled = false;
+  }
+}
+
 function new_post(s) {
   if (s.length == 0) { return; }
   var draft = unicodeStringToTypedArray(document.getElementById('draft').value); // escapeHTML(
-	var trimmed = '';
-  trimmed = draft.replace(/^\s+|\s+$/g, '');
-  if ( trimmed == '' ) {
-    //document.getElementById('draft').value = '';
-    launch_snackbar('Empty Message');
-    return;
-  }
 
-  console.log(trimmed);
   var draft = s
   var recps = tremola.chats[curr_chat].members.join(' ')
   backend("priv:post " + btoa(draft) + " " + recps);

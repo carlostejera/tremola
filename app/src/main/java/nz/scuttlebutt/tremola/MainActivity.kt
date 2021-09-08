@@ -173,19 +173,23 @@ class MainActivity : Activity() {
 
         // Retrieve Image from taking the image
         if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Camera image retrieval
             val imageBitmap = data?.extras?.get("data") as Bitmap
             
             val img = compressAndEncodeBitmap(imageBitmap)
 
+            // Posting the image
             tremolaState.wai.eval("sendImg('${img}')")
         }
 
         if (requestCode == 1111 && resultCode == RESULT_OK) {
+            // Image picking retrieval
             val imageBitmap = data?.data //as Bitmap
             val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageBitmap)
             
             val img = compressAndEncodeBitmap(bitmap)
 
+            // Posting the image
             tremolaState.wai.eval("showImagePreview('${img}')")
         }
 

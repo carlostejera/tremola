@@ -185,6 +185,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
 
                     var path = act.cacheDir.toString() + "/tremolaAudio.mp3"
                     val data: String = convertAudioFileToBase64(path)
+                    // TODO: Audio Compression improvements
 
                     // Send the audio file to the peer
                     eval("sendAudio('${data}')")

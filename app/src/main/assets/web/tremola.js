@@ -197,14 +197,17 @@ function new_post(s) {
 }
 
 function files() {
+    // Get the image files from the system
+    // Load current chat recps
     var recps = tremola.chats[curr_chat].members.join(' ')
     backend('get:file' + " " + recps); //send request to backend
     console.log('get file');
     closeOverlay();
+    // Display preview overlay
     var s = document.getElementById('image-preview-overlay').style;
     s.display = 'initial';
-	s.height = '80%'; // 0.8 * docHeight;
-	overlayIsActive = true;
+    s.height = '80%'; // 0.8 * docHeight;
+    overlayIsActive = true;
 }
 
 function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group or public)>

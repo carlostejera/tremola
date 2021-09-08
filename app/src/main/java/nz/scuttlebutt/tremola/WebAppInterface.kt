@@ -10,12 +10,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.media.MediaRecorder
+import android.os.Environment
 import android.util.Base64
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.google.zxing.integration.android.IntentIntegrator
@@ -26,6 +29,9 @@ import nz.scuttlebutt.tremola.ssb.db.entities.LogEntry
 import nz.scuttlebutt.tremola.ssb.db.entities.Pub
 import nz.scuttlebutt.tremola.ssb.peering.RpcInitiator
 import nz.scuttlebutt.tremola.ssb.peering.RpcServices
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
 import java.util.concurrent.Executors
 import java.util.jar.Manifest
 
@@ -33,6 +39,8 @@ import java.util.jar.Manifest
 // pt 3 in https://betterprogramming.pub/5-android-webview-secrets-you-probably-didnt-know-b23f8a8b5a0c
 
 class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val webView: WebView) {
+
+    private var recorder: MediaRecorder? = null
 
     @JavascriptInterface
     fun onFrontendRequest(s: String) {
@@ -143,6 +151,56 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 // Make an image for immediate sending
                 Log.d("onFrontendRequest", "Trying to take image")
                 takeImage()
+            }
+            "start:recording" -> {
+                Log.d("onFrontendRequest",
+                    (act as MainActivity).permissionToRecordAccepted.toString()
+                )
+                if (!(act as MainActivity).permissionToRecordAccepted) {
+                    Log.d("onFrontendRequest", "Request Permission")
+                    ActivityCompat.requestPermissions((act as MainActivity), (act as MainActivity).permissions, 200)
+                } else {
+                    Log.d("onFrontendRequest", "Trying to start recording")
+                    var path = Environment.getExternalStorageDirectory().toString() + "/tremolaAudio.mp3"
+                    recorder = MediaRecorder().apply {
+                        setAudioSource(MediaRecorder.AudioSource.MIC)
+                        setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                        setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                        setOutputFile("$path")
+                        prepare()
+                    }
+                    Log.d("onFrontendRequest", "Recorder Created")
+                    Log.d("onFrontendRequest", "$path")
+                    recorder!!.start()
+                }
+            }
+            "stop:recording" -> {
+                if ((act as MainActivity).permissionToRecordAccepted) {
+                    Log.d("onFrontendRequest", "Trying to stop recording")
+                    recorder!!.stop()
+                    recorder!!.release()
+
+                    var path = Environment.getExternalStorageDirectory().toString() + "/tremolaAudio.mp3"
+
+                    val baos = ByteArrayOutputStream()
+                    val fis = FileInputStream(File(path))
+                    var data: ByteArray = ByteArray(1024)
+                    var audioBytes: ByteArray
+
+                    var n: Int
+                    while (-1 != fis.read(data).also { n = it }) baos.write(data, 0, n)
+                    audioBytes = baos.toByteArray()
+                    // Log.d("onFrontendRequest", audioBytes.toString())
+                    var _audioBase64 = Base64.encodeToString(audioBytes, Base64.NO_WRAP);
+                    // Log.d("onFrontendRequest", _audioBase64)
+
+                    // eval("playAudio('test')")
+                    eval("playAudio('${_audioBase64}')")
+
+                    // Delete File
+                    val myFile: File = File(path)
+                    myFile.delete()
+                }
             }
             "debug" -> {
                 // Debug message to debug JS Code

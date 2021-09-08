@@ -237,6 +237,18 @@ textarea {
   font-weight: 500;
 }
 
+.postItem {
+  width: 15rem;
+	margin-left: auto;
+	overflow-wrap: break-word;
+}
+
+.postItemOther{
+				width: 15rem;
+				margin-right: auto;
+				overflow-wrap: break-word;
+}
+
 /* --------------------------------------------------------------------------- */
 
 #snackbar {

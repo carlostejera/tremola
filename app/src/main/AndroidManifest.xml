@@ -27,6 +27,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tremola.Launcher"
+        android:requestLegacyExternalStorage="true"
         android:background="@android:color/white"> <!-- holo_green_light" -->
         <activity android:name=".MainActivity">
             <intent-filter>

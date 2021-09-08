@@ -254,17 +254,32 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
     img = createImageElement("IMG" + secretIMG);
   }
 
+  let audio;
+  if (txt.substring(0, 3) == "AUD") {
+    audio = document.createElement('audio');
+    audio.src = 'data:audio/wav;base64, ' + txt.substring(3);
+    audio.controls = true;
+
+    var wrap = document.createElement('div');
+    wrap.appendChild(audio.cloneNode(true));
+    audio = wrap.innerHTML;
+  }
+
   if (is_other) {
     var c = tremola.contacts[p.from]
     row = "<td style='vertical-align: top;'><button class=contact_picture style='margin-right: 0.5em; margin-left: 0.25em; background: " + c.color + "; width: 2em; height: 2em;'>" + c.initial + "</button>"
     // row  = "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&gt;"
     if (img) 
       row += "<td colspan=2 style='padding-bottom: 10px;'>" + img + "<td colspan=2>";
+    else if (audio)
+    row += "<td colspan=2 style='padding-bottom: 10px;'>" + audio + "<td colspan=2>";
     else
       row += "<td colspan=2 style='padding-bottom: 10px;'>" + box + "<td colspan=2>";
   } else {
     if (img)
       row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + img;
+    else if (audio)
+      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + audio;
     else
       row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + box;
     row += "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&lt;"

@@ -37,6 +37,11 @@
   .gray {
     background-color: var(--gray);
   }
+
+  .green {
+    background-color: var(--lightGreen);
+  }
+
   .flat {
     border: none;
     font-size: small;
@@ -128,6 +133,10 @@ textarea {
   background: trans;
 }
 
+.preview-of-image {
+  width: 100%;
+}
+
 .float_button {
   position: absolute;
     top: calc(100% - 110pt);
@@ -180,7 +189,7 @@ textarea {
   display: inline-block;
 }
 
-.menu_item_button {
+.post-menu-item-button {
   border: none;
   text-align: left;
   vertical-align: top;
@@ -188,6 +197,28 @@ textarea {
   width: 100%;
   font-size: medium;
   background-color: white;
+}
+
+.post-menu {
+    border: none;
+    text-align: center;
+    vertical-align: bottom;
+    height: 3em;
+    width: 100%;
+    font-size: medium;
+    background-color: white;
+}
+
+.post-menu-overlay {
+  display: none;
+  position: absolute;
+  right: 10px;
+  bottom: 70px;
+  background: #fff;
+  padding: 0.5em;
+  z-index: 1001; /* high z-index */
+  border-radius: 5px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.9);
 }
 
 .settings {
@@ -204,6 +235,18 @@ textarea {
   text-overflow: clip;
   margin-top: 6px;
   font-weight: 500;
+}
+
+.postItem {
+  width: 15rem;
+	margin-left: auto;
+	overflow-wrap: break-word;
+}
+
+.postItemOther{
+				width: 15rem;
+				margin-right: auto;
+				overflow-wrap: break-word;
 }
 
 /* --------------------------------------------------------------------------- */
@@ -318,4 +361,15 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* Image Posts */
+.image-post {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  max-height: 300px;
+  object-fit: cover;
+
+  display: block
 }

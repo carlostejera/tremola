@@ -46,7 +46,8 @@ var scenarioMenu = {
                 ['Dump', 'menu_dump'],
                 ['Reset', 'menu_reset']]
 */
-  'posts'    : [['Rename', 'menu_edit_convname'],
+  'posts'    : [['Take photo', 'menu_take_photo'],
+                ['Rename', 'menu_edit_convname'],
                 ['(un)Forget', 'menu_forget_conv'],
                 ['Settings', 'menu_settings'],
                 ['About', 'menu_about']],
@@ -135,6 +136,13 @@ function btnBridge(e) {
     document.getElementById("menu").innerHTML = m;
     return;
   }
+  if (e == 'btn:image_post') {
+      if (scenarioMenu[curr_scenario].length == 0)
+        return;
+      document.getElementById("post-menu").style.display = 'initial';
+      document.getElementById("overlay-trans").style.display = 'initial';
+      return;
+    }
   // if (typeof Android != "undefined") { Android.onFrontendRequest(e); }
 }
 
@@ -156,9 +164,11 @@ function menu_settings() {
 }
 
 function closeOverlay(){
+  document.getElementById('post-menu').style.display = 'none';
   document.getElementById('menu').style.display = 'none';
   document.getElementById('qr-overlay').style.display = 'none';
   document.getElementById('preview-overlay').style.display = 'none';
+  document.getElementById('image-preview-overlay').style.display = 'none';
   document.getElementById('new_chat-overlay').style.display = 'none';
   document.getElementById('new_contact-overlay').style.display = 'none';
   document.getElementById('confirm_contact-overlay').style.display = 'none';
@@ -186,6 +196,21 @@ function showPreview() {
   s.height = '80%'; // 0.8 * docHeight;
   document.getElementById('overlay-bg').style.display = 'initial';
   overlayIsActive = true;
+}
+
+function showImagePreview(s) {
+    document.getElementById('image-preview').src= "data:image/png;base64, " + s;
+    document.getElementById('image-preview').alt=s;
+
+      var s = document.getElementById('image-preview-overlay').style;
+      s.display = 'initial';
+      s.height = '80%'; // 0.8 * docHeight;
+      document.getElementById('overlay-bg').style.display = 'initial';
+      overlayIsActive = true;
+}
+
+function getFile() {
+    files()
 }
 
 function menu_about() {
@@ -291,16 +316,27 @@ function qr_scan_confirmed() {
   closeOverlay();
 }
 
-function takePhoto() {
-  console.log("Takeing images...");
+function menu_take_photo() {
   backend("make:image")
+  closeOverlay()
 }
 
-function showImg(arr) {
-  backend("debug HelloFromJS")
-  backend("debug " + arr)
-  var img = document.getElementById('showImg');
-  img.src = "data:image/png;base64," + arr;
+function sendImg(img) {
+  // Get the recps
+  let recps = tremola.chats[curr_chat].members.join(' ');
+
+  // If the img string already has the data:image/png/base64 tag from the image
+  // picking, then remove it from the string
+  if (img.includes("data:image/png;base64, ")) {
+    img = img.split("data:image/png;base64, ")[1];
+  }
+
+  let msg = btoa("IMG" + img);
+
+  // Send the img
+  backend("priv:post " + msg + " " + recps);
+
+  closeOverlay();
 }
 
 // ---

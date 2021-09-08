@@ -1,18 +1,23 @@
 package nz.scuttlebutt.tremola
 
 import android.app.Activity
+import android.app.Instrumentation
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.provider.MediaStore
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.util.Base64
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat.checkSelfPermission
 import com.google.zxing.integration.android.IntentIntegrator
 import org.json.JSONObject
 
@@ -22,6 +27,7 @@ import nz.scuttlebutt.tremola.ssb.db.entities.Pub
 import nz.scuttlebutt.tremola.ssb.peering.RpcInitiator
 import nz.scuttlebutt.tremola.ssb.peering.RpcServices
 import java.util.concurrent.Executors
+import java.util.jar.Manifest
 
 
 // pt 3 in https://betterprogramming.pub/5-android-webview-secrets-you-probably-didnt-know-b23f8a8b5a0c
@@ -105,12 +111,14 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 val rawStr = tremolaState.msgTypes.mkPost(
                                  Base64.decode(args[1], Base64.NO_WRAP).decodeToString(),
                                  args.slice(2..args.lastIndex))
-                Log.d("onFrontendRequest", "Command: " + args[0])
-                Log.d("onFrontendRequest","Message Sending: " + Base64.decode(args[1], Base64.NO_WRAP).decodeToString())
+                Log.d("onFrontendRequest", "Message: " + args)
                 val evnt = tremolaState.msgTypes.jsonToLogEntry(rawStr,
                                             rawStr.encodeToByteArray())
                 evnt?.let { rx_event(it) } // persist it, propagate horizontally and also up
                 return
+            }
+            "get:file" -> {
+                chooseImageGallery();
             }
             "invite:redeem" -> {
                 try {
@@ -135,11 +143,10 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 // Make an image for immediate sending
                 Log.d("onFrontendRequest", "Trying to take image")
                 takeImage()
-                eval("backend(\"debug takeImage\")")
             }
             "debug" -> {
                 // Debug message to debug JS Code
-                Log.d("jsFrontend", args[1])
+                Log.d("jsFrontend", args.toString())
             }
             else -> {
                 Log.d("onFrontendRequest", "unknown")
@@ -159,8 +166,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
     }
 
     private fun takeImage() {
-        // Tries to make an image with the camera app and returns it
-        // returns null if something goes wrong
+        // Tries to make an image with the camera app
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             act.startActivityForResult(takePictureIntent, 1)
@@ -202,6 +208,14 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
         tremolaState.addLogEntry(entry)       // persist the log entry
         sendEventToFrontend(entry)            // notify the local app
         tremolaState.peers.newLogEntry(entry) // stream it to peers we are currently connected to
+    }
+
+    fun chooseImageGallery() {
+
+        val IMAGE_CHOOSE = 1111;
+        val iintent = Intent(Intent.ACTION_PICK)
+        iintent.type = "image/*"
+        act.startActivityForResult(iintent, IMAGE_CHOOSE)
     }
 
     fun sendEventToFrontend(evnt: LogEntry) {

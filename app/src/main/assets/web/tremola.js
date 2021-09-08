@@ -175,9 +175,37 @@ function menu_dump() {
 
 // ---
 
+// DOM Load Eventlistener
+document.addEventListener('DOMContentLoaded', function() {
+  // First time check draft
+  check_draft_input();
+
+  // Adding listener to the check draft input function
+  let draftObj = document.getElementById("draft");
+  draftObj.addEventListener("input", check_draft_input);
+});
+
+function check_draft_input() {
+  // Check if the value in the draft box is not empty
+  var draft = unicodeStringToTypedArray(document.getElementById('draft').value);
+
+  // Trim the string so that is has no unnecessary whitespace
+  var trimmed = '';
+  trimmed = draft.replace(/^\s+|\s+$/g, '');
+
+  // Is the trimmed version empty?
+  if ( trimmed == '' ) {
+    document.getElementById('btn:preview').disabled = true;
+  } else {
+    document.getElementById('btn:preview').disabled = false;
+  }
+}
+
 function new_post(s) {
   if (s.length == 0) { return; }
   var draft = unicodeStringToTypedArray(document.getElementById('draft').value); // escapeHTML(
+
+  var draft = s
   var recps = tremola.chats[curr_chat].members.join(' ')
   backend("priv:post " + btoa(draft) + " " + recps);
   var c = document.getElementById('core');
@@ -186,28 +214,84 @@ function new_post(s) {
   closeOverlay();
 }
 
+function files() {
+    // Get the image files from the system
+    // Load current chat recps
+    var recps = tremola.chats[curr_chat].members.join(' ')
+    backend('get:file' + " " + recps); //send request to backend
+    console.log('get file');
+    closeOverlay();
+    // Display preview overlay
+    var s = document.getElementById('image-preview-overlay').style;
+    s.display = 'initial';
+    s.height = '80%'; // 0.8 * docHeight;
+    overlayIsActive = true;
+}
+
 function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group or public)>
   var pl = document.getElementById('lst:posts');
   var is_other = p["from"] != myId;
-  var box = "<div class=light style='padding: 3pt; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.7);'>"
-  if (is_other)
+  var box = "<div class='light postItem' style='padding: 3pt; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.7);'>"
+  if (is_other) {
+    var box = "<div class='light postItemOther' style='padding: 3pt; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.7);'>"
     box += "<font size=-1><i>" + fid2display(p["from"]) + "</i></font><br>";
+  }
   var txt = escapeHTML(p["body"]).replace(/\n/g, "<br>\n");
   var d = new Date(p["when"]);
   d = d.toDateString() + ' ' + d.toTimeString().substring(0,5);
   box += txt + "<div align=right style='font-size: x-small;'><i>";
   box += d + "</i></div></div>";
   var row;
+
+  // Check if message is an image
+  let img;
+  if (txt.substring(0,3) == "IMG") {
+    img = createImageElement(txt);
+  }
+
+  // Secret! PSSSSSSSSSS!
+  if (txt.substring(0.3) == "/R") {
+    img = createImageElement("https://i.ds.at/MxdaKg/rs:fill:750:0/plain/2021/07/29/572c4830-721d-11eb-bb63-96959c3b62f2.jpg", false);
+  }
+
   if (is_other) {
     var c = tremola.contacts[p.from]
     row = "<td style='vertical-align: top;'><button class=contact_picture style='margin-right: 0.5em; margin-left: 0.25em; background: " + c.color + "; width: 2em; height: 2em;'>" + c.initial + "</button>"
     // row  = "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&gt;"
-    row += "<td colspan=2 style='padding-bottom: 10px;'>" + box + "<td colspan=2>";
+    if (img) 
+      row += "<td colspan=2 style='padding-bottom: 10px;'>" + img + "<td colspan=2>";
+    else
+      row += "<td colspan=2 style='padding-bottom: 10px;'>" + box + "<td colspan=2>";
   } else {
-    row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + box;
+    if (img)
+      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + img;
+    else
+      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + box;
     row += "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&lt;"
   }
   pl.insertRow(pl.rows.length).innerHTML = row;
+}
+
+function createImageElement (imgCode, byteArray=true) {
+  // Creates an image HTML element and adds an base64 encoded image to it.
+  // Returns the HTML Element as HTML Code
+  let img = document.createElement('img');
+
+  if (byteArray) {
+    img.setAttribute("src", "data:image/png;base64, " + imgCode.substring(3));
+  } else {
+    img.setAttribute("src", imgCode);
+  }
+
+  // Styling
+  img.setAttribute("class", "image-post")
+
+  // Get the element as html code
+  var wrap = document.createElement('div');
+  wrap.appendChild(img.cloneNode(true));
+  img = wrap.innerHTML;
+
+  return img;
 }
 
 function load_chat(nm) {
@@ -659,4 +743,7 @@ function b2f_initialize(id) {
   setScenario('chats');
 }
 
+function b2f_new_image(s) {
+  console.log("received new_image: <" + s + ">")
+}
 // --- eof

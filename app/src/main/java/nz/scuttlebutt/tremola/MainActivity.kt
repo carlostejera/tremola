@@ -173,23 +173,49 @@ class MainActivity : Activity() {
 
         // Retrieve Image from taking the image
         if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Camera image retrieval
             val imageBitmap = data?.extras?.get("data") as Bitmap
-            // Convert imageBitmap to ByteArray
-            val stream = ByteArrayOutputStream()
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 1, stream)
-            // Send Byte Array to javascript, so it can be displayed on the image element with the id showImg
-            // ByteArray encode base64
-            var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
-            Log.d("Ian", img)
-            val s: String = "Img(\"" + img + "\")"
-            Log.d("Ian", s)
-            tremolaState.wai.eval("showImg(\"HelloFromKotlin\")")
-            // tremolaState.wai.eval("let img = '{$img}'")
-            tremolaState.wai.eval(s)
-            tremolaState.wai.eval("backend(\"debug hello\")")
+            
+            val img = compressAndEncodeBitmap(imageBitmap)
+
+            // Posting the image
+            tremolaState.wai.eval("sendImg('${img}')")
+        }
+
+        if (requestCode == 1111 && resultCode == RESULT_OK) {
+            // Image picking retrieval
+            val imageBitmap = data?.data //as Bitmap
+            val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageBitmap)
+            
+            val img = compressAndEncodeBitmap(bitmap)
+
+            // Posting the image
+            tremolaState.wai.eval("showImagePreview('${img}')")
         }
 
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun compressAndEncodeBitmap(bitmap: Bitmap): String {
+        /*
+            Compresses an bitmap and converts it to an base64 string.
+            returns the string
+         */
+        // scale to 96xN pixels
+        val resized = Bitmap.createScaledBitmap(bitmap, 96,
+            96*bitmap.height/bitmap.width, true)
+
+        // Convert imageBitmap to ByteArray
+        val stream = ByteArrayOutputStream()
+        resized.compress(Bitmap.CompressFormat.JPEG, 85, stream)
+
+        // ByteArray encode base64
+        var img: String = Base64.encodeToString(stream.toByteArray(), Base64.NO_WRAP)
+
+        // Log Message
+        Log.d("image", "${img.length}B <${img}>")
+
+        return img
     }
 
     override fun onResume() {
@@ -236,5 +262,13 @@ class MainActivity : Activity() {
         try { server_socket?.close() } catch (e: Exception) {}
         server_socket =  ServerSocket(Constants.SSB_IPV4_TCPPORT)
         Log.d("SERVER TCP addr", "${Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)}:${server_socket!!.localPort}")
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }

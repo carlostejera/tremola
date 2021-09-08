@@ -369,6 +369,7 @@ input:checked + .slider:before {
   height: auto;
   max-width: 300px;
   max-height: 300px;
+  object-fit: cover;
 
   display: block
 }

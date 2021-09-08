@@ -317,16 +317,8 @@ function qr_scan_confirmed() {
 }
 
 function menu_take_photo() {
-  console.log("Takeing images...");
   backend("make:image")
   closeOverlay()
-}
-
-function showImg(img) {
-  // Deprecated
-  throw DeprecatedError("showImg");
-  var img = document.getElementById('showImg');
-  img.src = "data:image/png;base64," + arr;
 }
 
 function sendImg(img) {

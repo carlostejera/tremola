@@ -323,25 +323,26 @@ function menu_take_photo() {
 }
 
 function showImg(img) {
+  // Deprecated
+  throw DeprecatedError("showImg");
   var img = document.getElementById('showImg');
   img.src = "data:image/png;base64," + arr;
 }
 
 function sendImg(img) {
   // Get the recps
-  let recps = tremola.chats[curr_chat].members.join(' ')
-  backend("debug " + recps)
+  let recps = tremola.chats[curr_chat].members.join(' ');
 
-  // If img has data:image/png;base64, then show remove it from the string
+  // If the img string already has the data:image/png/base64 tag from the image
+  // picking, then remove it from the string
   if (img.includes("data:image/png;base64, ")) {
-    img = img.split("data:image/png;base64, ")[1]
+    img = img.split("data:image/png;base64, ")[1];
   }
 
-  backend("debug " + "IMG" + img)
-  let msg = btoa("IMG" + img)
-  backend("debug " + msg)
+  let msg = btoa("IMG" + img);
 
-  backend("priv:post " + msg + " " + recps)
+  // Send the img
+  backend("priv:post " + msg + " " + recps);
 }
 
 // ---

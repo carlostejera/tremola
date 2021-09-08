@@ -335,6 +335,8 @@ function sendImg(img) {
 
   // Send the img
   backend("priv:post " + msg + " " + recps);
+
+  closeOverlay();
 }
 
 // ---

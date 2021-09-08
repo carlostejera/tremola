@@ -187,7 +187,7 @@ function new_post(s) {
   closeOverlay();
 }
 
-function files() { //s being the image
+function files() {
     var recps = tremola.chats[curr_chat].members.join(' ')
     backend('get:file' + " " + recps); //send request to backend
     console.log('get file');
@@ -201,9 +201,11 @@ function files() { //s being the image
 function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group or public)>
   var pl = document.getElementById('lst:posts');
   var is_other = p["from"] != myId;
-  var box = "<div class=light style='padding: 3pt; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.7);'>"
-  if (is_other)
+  var box = "<div class='light postItem' style='padding: 3pt; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.7);'>"
+  if (is_other) {
+    var box = "<div class='light postItemOther' style='padding: 3pt; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.7);'>"
     box += "<font size=-1><i>" + fid2display(p["from"]) + "</i></font><br>";
+  }
   var txt = escapeHTML(p["body"]).replace(/\n/g, "<br>\n");
   var d = new Date(p["when"]);
   d = d.toDateString() + ' ' + d.toTimeString().substring(0,5);
@@ -211,7 +213,7 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
   box += d + "</i></div></div>";
   var row;
 
-  // Check if messgae if a image
+  // Check if message is an image
   let img;
   if (txt.substring(0,3) == "IMG") {
     img = document.createElement('img');

@@ -212,12 +212,9 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
   var row;
 
   // Check if messgae if a image
-  backend("debug checking type of message")
   let img;
   if (txt.substring(0,3) == "IMG") {
-    backend("debug before img")
     img = createImageElement(txt);
-    backend("after img")
   }
 
   // Secret! PSSSSSSSSSS!
@@ -244,25 +241,18 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
 }
 
 function createImageElement (imgCode, byteArray=true) {
-  backend("debug in img")
   // Creates an image HTML element and adds an base64 encoded image to it.
   // Returns the HTML Element as HTML Code
   let img = document.createElement('img');
-
-  backend("debug here0")
 
   if (byteArray) {
     img.setAttribute("src", "data:image/png;base64, " + imgCode.substring(3));
   } else {
     img.setAttribute("src", imgCode);
   }
-  
-  backend("debug here1")
 
   // Styling
   img.setAttribute("class", "image-post")
-
-  backend("debug here2")
 
   // Get the element as html code
   var wrap = document.createElement('div');

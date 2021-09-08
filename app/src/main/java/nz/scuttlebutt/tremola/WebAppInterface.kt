@@ -162,13 +162,19 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 } else {
                     Log.d("onFrontendRequest", "Trying to start recording")
                     var path = Environment.getExternalStorageDirectory().toString() + "/tremolaAudio.mp3"
+                    path = act.cacheDir.toString() + "/tremolaAudio.mp3"
                     recorder = MediaRecorder().apply {
                         setAudioSource(MediaRecorder.AudioSource.MIC)
                         setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
                         setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
                         setOutputFile("$path")
-                        prepare()
                     }
+                    Log.d("onFrontendRequest", path)
+                    // Create the file
+                    // val f: File = File(path)
+                    // f.createNewFile()
+
+                    recorder!!.prepare()
                     Log.d("onFrontendRequest", "Recorder Created")
                     Log.d("onFrontendRequest", "$path")
                     recorder!!.start()
@@ -180,7 +186,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                     recorder!!.stop()
                     recorder!!.release()
 
-                    var path = Environment.getExternalStorageDirectory().toString() + "/tremolaAudio.mp3"
+                    var path = act.cacheDir.toString() + "/tremolaAudio.mp3"
 
                     val baos = ByteArrayOutputStream()
                     val fis = FileInputStream(File(path))

@@ -360,26 +360,11 @@ function stopAudio() {
   document.getElementById('btn:audio_record').addEventListener('click', recordAudio);
 }
 
-function playAudio(data) {
-  console.log("debug play audio");
-  console.log("debug " + data)
-  let audio = document.createElement('audio');
-  console.log("debug audio created");
-  audio.src = 'data:audio/wav;base64, ' + data;
-  console.log("debug Audio data added")
-  audio.controls = true;
-  console.log("debug controls added")
-  audio.autoplay = true;
-  console.log("debug audio autoplay set")
-  // Add audio to the body
-  document.getElementById("test-audio").appendChild(audio);
-  console.log("debug audio added to test-audio")
-}
-
 function sendAudio(data) {
   // Get the recps
   let recps = tremola.chats[curr_chat].members.join(' ');
 
+  // Give Audio prefix AUD and convert it to base64 to be decoded in the backend.
   let msg = "AUD" + data;
   msg = btoa(msg);
 

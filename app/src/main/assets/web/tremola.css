@@ -239,14 +239,16 @@ textarea {
 
 .postItem {
   width: 15rem;
-	margin-left: auto;
-	overflow-wrap: break-word;
+  margin-left: auto;
+  overflow-wrap: break-word;
+  background-color: var(--lightGreen);
 }
 
 .postItemOther{
-				width: 15rem;
-				margin-right: auto;
-				overflow-wrap: break-word;
+  width: 15rem;
+  margin-right: auto;
+  overflow-wrap: break-word;
+  background-color: var(--active);
 }
 
 /* --------------------------------------------------------------------------- */

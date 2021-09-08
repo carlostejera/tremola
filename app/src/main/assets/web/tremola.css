@@ -350,3 +350,13 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+/* Image Posts */
+.image-post {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  max-height: 300px;
+
+  display: block
+}

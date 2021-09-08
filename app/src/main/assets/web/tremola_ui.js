@@ -376,4 +376,15 @@ function playAudio(data) {
   console.log("debug audio added to test-audio")
 }
 
+function sendAudio(data) {
+  // Get the recps
+  let recps = tremola.chats[curr_chat].members.join(' ');
+
+  let msg = "AUD" + data;
+  msg = btoa(msg);
+
+  // Send the audio
+  backend("priv:post " + msg + " " + recps);
+}
+
 // ---

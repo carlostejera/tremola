@@ -187,15 +187,14 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                     var data: ByteArray = ByteArray(1024)
                     var audioBytes: ByteArray
 
+                    // Convert Audio file to bytes
                     var n: Int
                     while (-1 != fis.read(data).also { n = it }) baos.write(data, 0, n)
                     audioBytes = baos.toByteArray()
-                    // Log.d("onFrontendRequest", audioBytes.toString())
-                    var _audioBase64 = Base64.encodeToString(audioBytes, Base64.NO_WRAP);
-                    // Log.d("onFrontendRequest", _audioBase64)
 
-                    // eval("playAudio('test')")
-                    eval("playAudio('${_audioBase64}')")
+                    var _audioBase64 = Base64.encodeToString(audioBytes, Base64.NO_WRAP);
+
+                    eval("sendAudio('${_audioBase64}')")
 
                     // Delete File
                     val myFile: File = File(path)

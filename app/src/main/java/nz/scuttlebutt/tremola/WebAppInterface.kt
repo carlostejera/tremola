@@ -153,15 +153,11 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 takeImage()
             }
             "start:recording" -> {
-                Log.d("onFrontendRequest",
-                    (act as MainActivity).permissionToRecordAccepted.toString()
-                )
                 if (!(act as MainActivity).permissionToRecordAccepted) {
-                    Log.d("onFrontendRequest", "Request Permission")
+                    Log.d("audio", "Request Permission")
                     ActivityCompat.requestPermissions((act as MainActivity), (act as MainActivity).permissions, 200)
                 } else {
-                    Log.d("onFrontendRequest", "Trying to start recording")
-                    var path = Environment.getExternalStorageDirectory().toString() + "/tremolaAudio.mp3"
+                    Log.d("audio", "Trying to start recording")
                     path = act.cacheDir.toString() + "/tremolaAudio.mp3"
                     recorder = MediaRecorder().apply {
                         setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -169,20 +165,14 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                         setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
                         setOutputFile("$path")
                     }
-                    Log.d("onFrontendRequest", path)
-                    // Create the file
-                    // val f: File = File(path)
-                    // f.createNewFile()
 
                     recorder!!.prepare()
-                    Log.d("onFrontendRequest", "Recorder Created")
-                    Log.d("onFrontendRequest", "$path")
                     recorder!!.start()
                 }
             }
             "stop:recording" -> {
                 if ((act as MainActivity).permissionToRecordAccepted) {
-                    Log.d("onFrontendRequest", "Trying to stop recording")
+                    Log.d("audio", "Trying to stop recording")
                     recorder!!.stop()
                     recorder!!.release()
 

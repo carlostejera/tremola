@@ -231,9 +231,9 @@ function files() {
 function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group or public)>
   var pl = document.getElementById('lst:posts');
   var is_other = p["from"] != myId;
-  var box = "<div class='light postItem' style='padding: 3pt; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.7);'>"
+  var box = "<div class='light postItem' style='padding: 3pt; border-radius: 4px;'>"
   if (is_other) {
-    var box = "<div class='light postItemOther' style='padding: 3pt; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.7);'>"
+    var box = "<div class='light postItemOther' style='padding: 3pt; border-radius: 4px;'>"
     box += "<font size=-1><i>" + fid2display(p["from"]) + "</i></font><br>";
   }
   var txt = escapeHTML(p["body"]).replace(/\n/g, "<br>\n");

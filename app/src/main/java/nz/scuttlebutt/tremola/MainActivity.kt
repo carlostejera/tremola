@@ -51,6 +51,7 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Request permission for the voice messages
         ActivityCompat.requestPermissions(this, permissions, 200)
 
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)

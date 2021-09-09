@@ -270,6 +270,11 @@ function checkMessage(txt) {
     element = createAudioElement(txt);
   }
 
+  // Check if message is an audio message
+  if (txt.substring(0, 2) == "/r") {
+    element = createAudioElement("AUD" + secretAUD);
+  }
+
   return element
 }
 

@@ -210,7 +210,7 @@ function showImagePreview(s) {
 }
 
 function getFile() {
-    files()
+    getImageFromSystem()
 }
 
 function menu_about() {

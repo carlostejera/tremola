@@ -190,15 +190,10 @@ function check_draft_input() {
   var draft = unicodeStringToTypedArray(document.getElementById('draft').value);
 
   // Trim the string so that is has no unnecessary whitespace
-  var trimmed = '';
-  trimmed = draft.replace(/^\s+|\s+$/g, '');
+  var trimmed = draft.replace(/^\s+|\s+$/g, '');
 
   // Is the trimmed version empty?
-  if ( trimmed == '' ) {
-    document.getElementById('btn:preview').disabled = true;
-  } else {
-    document.getElementById('btn:preview').disabled = false;
-  }
+  document.getElementById('btn:preview').disabled = (trimmed === '');
 }
 
 function new_post(s) {
@@ -214,12 +209,11 @@ function new_post(s) {
   closeOverlay();
 }
 
-function files() {
+function getImageFromSystem() {
     // Get the image files from the system
     // Load current chat recps
     var recps = tremola.chats[curr_chat].members.join(' ')
     backend('get:file' + " " + recps); //send request to backend
-    console.log('get file');
     closeOverlay();
     // Display preview overlay
     var s = document.getElementById('image-preview-overlay').style;
@@ -251,19 +245,9 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
     var c = tremola.contacts[p.from]
     row = "<td style='vertical-align: top;'><button class=contact_picture style='margin-right: 0.5em; margin-left: 0.25em; background: " + c.color + "; width: 2em; height: 2em;'>" + c.initial + "</button>"
     // row  = "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&gt;"
-    if (img) 
-      row += "<td colspan=2 style='padding-bottom: 10px;'>" + img + "<td colspan=2>";
-    else if (audio)
-    row += "<td colspan=2 style='padding-bottom: 10px;'>" + audio + "<td colspan=2>";
-    else
-      row += "<td colspan=2 style='padding-bottom: 10px;'>" + box + "<td colspan=2>";
+    row += "<td colspan=2 style='padding-bottom: 10px;'>" + (element ? element : box) + "<td colspan=2>";
   } else {
-    if (img)
-      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + img;
-    else if (audio)
-      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + audio;
-    else
-      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + box;
+    row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + (element ? element : box);
     row += "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&lt;"
   }
   pl.insertRow(pl.rows.length).innerHTML = row;

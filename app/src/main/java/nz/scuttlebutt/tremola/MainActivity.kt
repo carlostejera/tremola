@@ -1,9 +1,11 @@
 package nz.scuttlebutt.tremola
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.*
 import android.net.wifi.WifiManager
@@ -16,6 +18,7 @@ import android.util.Log
 import android.view.Window
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.app.ActivityCompat
 import com.google.zxing.integration.android.IntentIntegrator
 import nz.scuttlebutt.tremola.ssb.TremolaState
 import nz.scuttlebutt.tremola.ssb.peering.RpcResponder
@@ -41,8 +44,15 @@ class MainActivity : Activity() {
         .build()
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
 
+    // Requesting permission to RECORD_AUDIO
+    public var permissionToRecordAccepted = false
+    public var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Request permission for the voice messages
+        ActivityCompat.requestPermissions(this, permissions, 200)
 
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -274,5 +284,11 @@ class MainActivity : Activity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionToRecordAccepted = if (requestCode == 200) {
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        } else {
+            false
+        }
+        if (!permissionToRecordAccepted) finish()
     }
 }

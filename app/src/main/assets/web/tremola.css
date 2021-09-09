@@ -42,6 +42,10 @@
     background-color: var(--lightGreen);
   }
 
+  .red {
+    background-color: var(--red);
+  }
+
   .flat {
     border: none;
     font-size: small;

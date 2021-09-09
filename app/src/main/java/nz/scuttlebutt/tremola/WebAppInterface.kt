@@ -10,12 +10,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.media.MediaRecorder
+import android.os.Environment
 import android.util.Base64
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.google.zxing.integration.android.IntentIntegrator
@@ -26,6 +29,9 @@ import nz.scuttlebutt.tremola.ssb.db.entities.LogEntry
 import nz.scuttlebutt.tremola.ssb.db.entities.Pub
 import nz.scuttlebutt.tremola.ssb.peering.RpcInitiator
 import nz.scuttlebutt.tremola.ssb.peering.RpcServices
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
 import java.util.concurrent.Executors
 import java.util.jar.Manifest
 
@@ -33,6 +39,8 @@ import java.util.jar.Manifest
 // pt 3 in https://betterprogramming.pub/5-android-webview-secrets-you-probably-didnt-know-b23f8a8b5a0c
 
 class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val webView: WebView) {
+
+    private var recorder: MediaRecorder? = null
 
     @JavascriptInterface
     fun onFrontendRequest(s: String) {
@@ -144,6 +152,61 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 Log.d("onFrontendRequest", "Trying to take image")
                 takeImage()
             }
+            "start:recording" -> {
+                if (!(act as MainActivity).permissionToRecordAccepted) {
+                    // Request permission if the app doesn't have permission
+                    Log.d("audio", "Request Permission")
+                    ActivityCompat.requestPermissions((act as MainActivity), (act as MainActivity).permissions, 200)
+                } else {
+                    // Start Recording
+                    Log.d("audio", "Trying to start recording")
+
+                    // Setting up the Mediarecorder
+                    var path = act.cacheDir.toString() + "/tremolaAudio.mp3"
+                    recorder = MediaRecorder().apply {
+                        setAudioSource(MediaRecorder.AudioSource.MIC)
+                        setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                        setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                        setOutputFile("$path")
+                    }
+
+                    // Start recording
+                    recorder!!.prepare()
+                    recorder!!.start()
+                    eval("audioStatus(1)")
+                }
+            }
+            "stop:recording" -> {
+                // Stop Recording only if the permission to record was accepted
+                if ((act as MainActivity).permissionToRecordAccepted) {
+                    // Stop recording
+                    Log.d("audio", "Trying to stop recording")
+                    try {
+                        recorder!!.stop()
+                        recorder!!.release()
+                    } catch (e: Exception) {
+                        // Maybe happen if the button is pressed again to fast
+                        Log.e("audio", "Error stopping recording")
+                        // Reset everything
+                        recorder = null;
+                        eval("audioStatus(0)")
+                        return
+                    }
+                    eval("audioStatus(2)")
+
+                    var path = act.cacheDir.toString() + "/tremolaAudio.mp3"
+                    val data: String = convertAudioFileToBase64(path)
+                    // TODO: Audio Compression improvements
+
+                    // Send the audio file to the peer
+                    eval("sendAudio('${data}')")
+
+                    // Delete File for cleanup
+                    val myFile: File = File(path)
+                    myFile.delete()
+                    eval("audioStatus(0)")
+                }
+            }
             "debug" -> {
                 // Debug message to debug JS Code
                 Log.d("jsFrontend", args.toString())
@@ -179,6 +242,20 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
         webView.post(Runnable {
             webView.evaluateJavascript(js, null)
         })
+    }
+
+    private fun convertAudioFileToBase64(path: String): String {
+        val baos = ByteArrayOutputStream()
+        val fis = FileInputStream(File(path))
+        var data: ByteArray = ByteArray(1024)
+        var audioBytes: ByteArray
+
+        // Convert Audio file to bytes
+        var n: Int
+        while (-1 != fis.read(data).also { n = it }) baos.write(data, 0, n)
+        audioBytes = baos.toByteArray()
+
+        return Base64.encodeToString(audioBytes, Base64.NO_WRAP);
     }
 
     private fun importIdentity(secret: String): Boolean {

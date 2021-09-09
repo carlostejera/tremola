@@ -210,7 +210,7 @@ function showImagePreview(s) {
 }
 
 function getFile() {
-    files()
+    getImageFromSystem()
 }
 
 function menu_about() {
@@ -337,6 +337,68 @@ function sendImg(img) {
   backend("priv:post " + msg + " " + recps);
 
   closeOverlay();
+}
+
+// DOM load add event listener to button btn:audio_record
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("DOM loaded");
+  backend("debug DOM Loaded!")
+  document.getElementById('btn:audio_record').addEventListener('click', recordAudio);
+});
+
+function recordAudio() {
+  backend("start:recording");
+  console.log("Record")
+  document.getElementById('btn:audio_record').removeEventListener('click', recordAudio);
+  document.getElementById('btn:audio_record').addEventListener('click', stopAudio);
+}
+
+function stopAudio() {
+  backend("stop:recording");
+  console.log("Stop")
+  document.getElementById('btn:audio_record').removeEventListener('click', stopAudio);
+  document.getElementById('btn:audio_record').addEventListener('click', recordAudio);
+}
+
+function sendAudio(data) {
+  // Get the recps
+  let recps = tremola.chats[curr_chat].members.join(' ');
+
+  // Give Audio prefix AUD and convert it to base64 to be decoded in the backend.
+  let msg = "AUD" + data;
+  msg = btoa(msg);
+
+  // Send the audio
+  backend("priv:post " + msg + " " + recps);
+}
+
+function audioStatus(state) {
+  const standardClasses = "flat buttontext ";
+
+  const change = function(className) {
+    document.getElementById('btn:audio_record').setAttribute('class', standardClasses + className);
+  }
+
+  switch (state) {
+    case 0:
+      // Ideling / Ready
+      change("passive")
+      document.getElementById('btn:audio_record').disable = false;
+      break;
+    
+    case 1:
+      // Recording
+      change("red")
+      break;
+    
+    case 2:
+      // Loading / Processing
+      change("grey")
+      document.getElementById('btn:audio_record').disable = true;
+  
+    default:
+      break;
+  }
 }
 
 // ---

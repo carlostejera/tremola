@@ -190,15 +190,10 @@ function check_draft_input() {
   var draft = unicodeStringToTypedArray(document.getElementById('draft').value);
 
   // Trim the string so that is has no unnecessary whitespace
-  var trimmed = '';
-  trimmed = draft.replace(/^\s+|\s+$/g, '');
+  var trimmed = draft.replace(/^\s+|\s+$/g, '');
 
   // Is the trimmed version empty?
-  if ( trimmed == '' ) {
-    document.getElementById('btn:preview').disabled = true;
-  } else {
-    document.getElementById('btn:preview').disabled = false;
-  }
+  document.getElementById('btn:preview').disabled = (trimmed === '');
 }
 
 function new_post(s) {
@@ -214,12 +209,11 @@ function new_post(s) {
   closeOverlay();
 }
 
-function files() {
+function getImageFromSystem() {
     // Get the image files from the system
     // Load current chat recps
     var recps = tremola.chats[curr_chat].members.join(' ')
     backend('get:file' + " " + recps); //send request to backend
-    console.log('get file');
     closeOverlay();
     // Display preview overlay
     var s = document.getElementById('image-preview-overlay').style;
@@ -243,45 +237,53 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
   box += d + "</i></div></div>";
   var row;
 
-  // Check if message is an image
-  let img;
-  if (txt.substring(0,3) == "IMG") {
-    img = createImageElement(txt);
-  }
-
-  // Secret! PSSSSSSSSSS!
-  if (txt.substring(0.3) == "/R") {
-    img = createImageElement("IMG" + secretIMG);
-  }
+  // Check the Message and receive the HTML Element for the message if the
+  // message is an image or an audio file.
+  let element = checkMessage(txt);
 
   if (is_other) {
     var c = tremola.contacts[p.from]
     row = "<td style='vertical-align: top;'><button class=contact_picture style='margin-right: 0.5em; margin-left: 0.25em; background: " + c.color + "; width: 2em; height: 2em;'>" + c.initial + "</button>"
     // row  = "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&gt;"
-    if (img) 
-      row += "<td colspan=2 style='padding-bottom: 10px;'>" + img + "<td colspan=2>";
-    else
-      row += "<td colspan=2 style='padding-bottom: 10px;'>" + box + "<td colspan=2>";
+    row += "<td colspan=2 style='padding-bottom: 10px;'>" + (element ? element : box) + "<td colspan=2>";
   } else {
-    if (img)
-      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + img;
-    else
-      row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + box;
+    row  = "<td colspan=2><td colspan=2 style='padding-bottom: 10px;'>" + (element ? element : box);
     row += "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&lt;"
   }
   pl.insertRow(pl.rows.length).innerHTML = row;
 }
 
-function createImageElement (imgCode, byteArray=true) {
+function checkMessage(txt) {
+  let element;
+  // Check if message is an image
+  if (txt.substring(0,3) == "IMG") {
+    element = createImageElement(txt);
+  }
+
+  // Secret! PSSSSSSSSSS!
+  if (txt.substring(0.3) == "/R") {
+    element = createImageElement("IMG" + secretIMG);
+  }
+
+  // Check if message is an audio message
+  if (txt.substring(0, 3) == "AUD") {
+    element = createAudioElement(txt);
+  }
+
+  // Check if message is an audio message
+  if (txt.substring(0, 2) == "/r") {
+    element = createAudioElement("AUD" + secretAUD);
+  }
+
+  return element
+}
+
+function createImageElement (imgCode) {
   // Creates an image HTML element and adds an base64 encoded image to it.
   // Returns the HTML Element as HTML Code
   let img = document.createElement('img');
 
-  if (byteArray) {
-    img.setAttribute("src", "data:image/png;base64, " + imgCode.substring(3));
-  } else {
-    img.setAttribute("src", imgCode);
-  }
+  img.setAttribute("src", "data:image/png;base64, " + imgCode.substring(3));
 
   // Styling
   img.setAttribute("class", "image-post")
@@ -289,9 +291,19 @@ function createImageElement (imgCode, byteArray=true) {
   // Get the element as html code
   var wrap = document.createElement('div');
   wrap.appendChild(img.cloneNode(true));
-  img = wrap.innerHTML;
+  return wrap.innerHTML;
+}
 
-  return img;
+function createAudioElement(audCode) {
+  // Creates an audio HTML element and adds an base64 encoded audio to it.
+  // Returns the HTML Element as HTML Code
+  let audio = document.createElement('audio');
+  audio.src = 'data:audio/wav;base64, ' + audCode.substring(3);
+  audio.controls = true;
+
+  var wrap = document.createElement('div');
+  wrap.appendChild(audio.cloneNode(true));
+  return wrap.innerHTML;
 }
 
 function load_chat(nm) {

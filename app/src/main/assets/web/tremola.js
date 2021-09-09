@@ -243,21 +243,9 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
   box += d + "</i></div></div>";
   var row;
 
-  // Check if message is an image
-  let img;
-  if (txt.substring(0,3) == "IMG") {
-    img = createImageElement(txt);
-  }
-
-  // Secret! PSSSSSSSSSS!
-  if (txt.substring(0.3) == "/R") {
-    img = createImageElement("IMG" + secretIMG);
-  }
-
-  let audio;
-  if (txt.substring(0, 3) == "AUD") {
-    audio = createAudioElement(txt);
-  }
+  // Check the Message and receive the HTML Element for the message if the
+  // message is an image or an audio file.
+  let element = checkMessage(txt);
 
   if (is_other) {
     var c = tremola.contacts[p.from]
@@ -279,6 +267,27 @@ function load_post_item(p) { // { 'key', 'from', 'when', 'body', 'to' (if group 
     row += "<td style='vertical-align: top; color: var(--red); font-weight: 900;'>&lt;"
   }
   pl.insertRow(pl.rows.length).innerHTML = row;
+}
+
+function checkMessage(txt) {
+  let element;
+  // Check if message is an image
+  if (txt.substring(0,3) == "IMG") {
+    element = createImageElement(txt);
+  }
+
+  // Secret! PSSSSSSSSSS!
+  if (txt.substring(0.3) == "/R") {
+    element = createImageElement("IMG" + secretIMG);
+  }
+
+  // Check if message is an audio message
+  let audio;
+  if (txt.substring(0, 3) == "AUD") {
+    element = createAudioElement(txt);
+  }
+
+  return element
 }
 
 function createImageElement (imgCode) {

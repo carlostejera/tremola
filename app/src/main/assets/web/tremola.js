@@ -266,7 +266,6 @@ function checkMessage(txt) {
   }
 
   // Check if message is an audio message
-  let audio;
   if (txt.substring(0, 3) == "AUD") {
     element = createAudioElement(txt);
   }

@@ -173,6 +173,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                     // Start recording
                     recorder!!.prepare()
                     recorder!!.start()
+                    eval("audioStatus(1)")
                 }
             }
             "stop:recording" -> {
@@ -182,6 +183,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                     Log.d("audio", "Trying to stop recording")
                     recorder!!.stop()
                     recorder!!.release()
+                    eval("audioStatus(2)")
 
                     var path = act.cacheDir.toString() + "/tremolaAudio.mp3"
                     val data: String = convertAudioFileToBase64(path)
@@ -193,6 +195,7 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                     // Delete File for cleanup
                     val myFile: File = File(path)
                     myFile.delete()
+                    eval("audioStatus(0)")
                 }
             }
             "debug" -> {

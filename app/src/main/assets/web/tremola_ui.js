@@ -372,4 +372,33 @@ function sendAudio(data) {
   backend("priv:post " + msg + " " + recps);
 }
 
+function audioStatus(state) {
+  const standardClasses = "flat buttontext ";
+
+  const change = function(className) {
+    document.getElementById('btn:audio_record').setAttribute('class', standardClasses + className);
+  }
+
+  switch (state) {
+    case 0:
+      // Ideling / Ready
+      change("passive")
+      document.getElementById('btn:audio_record').disable = false;
+      break;
+    
+    case 1:
+      // Recording
+      change("red")
+      break;
+    
+    case 2:
+      // Loading / Processing
+      change("grey")
+      document.getElementById('btn:audio_record').disable = true;
+  
+    default:
+      break;
+  }
+}
+
 // ---

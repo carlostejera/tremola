@@ -181,8 +181,17 @@ class WebAppInterface(val act: Activity, val tremolaState: TremolaState, val web
                 if ((act as MainActivity).permissionToRecordAccepted) {
                     // Stop recording
                     Log.d("audio", "Trying to stop recording")
-                    recorder!!.stop()
-                    recorder!!.release()
+                    try {
+                        recorder!!.stop()
+                        recorder!!.release()
+                    } catch (e: Exception) {
+                        // Maybe happen if the button is pressed again to fast
+                        Log.e("audio", "Error stopping recording")
+                        // Reset everything
+                        recorder = null;
+                        eval("audioStatus(0)")
+                        return
+                    }
                     eval("audioStatus(2)")
 
                     var path = act.cacheDir.toString() + "/tremolaAudio.mp3"
